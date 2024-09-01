@@ -1,10 +1,13 @@
 import express from "express"
+import { createStudent } from "./user.controller";
 
 const router = express.Router();
 
+router.post('/create-student', createStudent);
 
 
-export default router;
+
+export const UserRoutes= router;
 
 
 
