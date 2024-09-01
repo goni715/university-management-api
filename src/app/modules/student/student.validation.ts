@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
 // Custom validation function for capitalized format
-const capitalizeValidator = (value : string) => {
-  const formattedValue = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+const capitalizeValidator = (value: string) => {
+  const formattedValue =
+    value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
   if (value !== formattedValue) {
     throw new Error(`${value} must be in capitalize format`);
   }
@@ -19,7 +20,11 @@ const userNameSchema = z.object({
     .refine(capitalizeValidator, {
       message: 'First Name must be in capitalize format',
     }),
-  middleName: z.string().max(20, "Middle Name can't be more than 20 characters").trim().optional(),
+  middleName: z
+    .string()
+    .max(20, "Middle Name can't be more than 20 characters")
+    .trim()
+    .optional(),
   lastName: z
     .string()
     .max(20, "Last Name can't be more than 20 characters")
@@ -52,17 +57,18 @@ const studentZodValidationSchema = z.object({
     .trim()
     // .nonempty('Email is required')
     .email({ message: 'Invalid email address' }),
-  password: z.string().min(6).max(20),
- gender: z.enum(['male', 'female', 'others'], {
-        errorMap: () => ({ message: '{VALUE} is not supported' }),
-      }),
-  
+  gender: z.enum(['male', 'female', 'others'], {
+    errorMap: () => ({ message: '{VALUE} is not supported' }),
+  }),
+
   dateOfBirth: z.string().trim().optional(),
- contactNo: z.string().trim(), //.nonempty('Contact Number is required'),
+  contactNo: z.string().trim(), //.nonempty('Contact Number is required'),
   emergencyContactNo: z.string().trim(), //.nonempty('Emergency Contact Number is required'),
-  bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], {
-    errorMap: () => ({ message: '{VALUE} is not supported blood group' }),
-  }).optional(),
+  bloodGroup: z
+    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], {
+      errorMap: () => ({ message: '{VALUE} is not supported blood group' }),
+    })
+    .optional(),
   presentAddress: z.string().trim(), //.nonempty('Present Address is required'),
   permanentAddress: z.string().trim(), //.nonempty('Permanent Address is required'),
   guardian: guardianSchema,
@@ -73,10 +79,12 @@ const studentZodValidationSchema = z.object({
     address: z.string().trim(), //.nonempty('Local Guardian Address is required'),
   }),
   profileImg: z.string().trim().optional(),
-  isActive: z.enum(['active', 'blocked'], {
-    errorMap: () => ({ message: '{VALUE} is not supported' }),
-  }).default('active'),
-  isDeleted: z.boolean().default(false)
+  isActive: z
+    .enum(['active', 'blocked'], {
+      errorMap: () => ({ message: '{VALUE} is not supported' }),
+    })
+    .default('active'),
+  isDeleted: z.boolean().default(false),
 });
 
 export default studentZodValidationSchema;

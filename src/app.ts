@@ -1,6 +1,7 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import { UserRoutes } from './app/modules/user/user.route';
+import globalErrorHandler from './app/middlewares/globalErrorHandler';
 
 const app: Application = express();
 
@@ -23,6 +24,10 @@ app.get('/', (req: Request, res: Response)=>{
 app.use('*', (req : Request, res : Response) => {
     res.status(404).json({status: false, message: "Route not found"})
 })
+
+
+//global error handler middleware
+app.use(globalErrorHandler)
 
 
 

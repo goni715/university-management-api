@@ -27,7 +27,6 @@ export interface TStudent {
   user: Types.ObjectId;
   name: TUserName;
   email: string;
-  password: string;
   gender: 'male' | 'female' | 'others'; //union literal type
   dateOfBirth?: string;
   contactNo: string;

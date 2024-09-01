@@ -106,12 +106,6 @@ const studentSchema = new Schema<TStudent>(
         message: '{VALUE} is not valid email',
       },
     },
-    password: {
-      type: String,
-      required: [true, 'Password must be required'],
-      minlength: [6, `Password must be minimum 6 characters`],
-      maxlength: [20, `Password can't be more than 20 characters`],
-    },
     gender: {
       type: String,
       enum: {
@@ -201,21 +195,7 @@ virtual.get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
 });
 
-//pre save middleware hook
-studentSchema.pre('save', async function (next) {
-  const user = this; //this means data
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-  next();
-});
 
-//post save middleware hook
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
-});
 
 // studentSchema.pre('find', function(next){
 //   this.find({isDeleted: { $ne:true }});
@@ -232,22 +212,12 @@ studentSchema.pre('aggregate', function (next) {
   next();
 });
 
-//creating a custom instance method
-// studentSchema.methods.isUserExists = async function(id:string) {
-//     const existingUser = await StudentModel.findOne({id:id});
-//     return existingUser;
-// }
 
-//creating a custom static method
-studentSchema.statics.isUserExists = async function (id: string) {
-  const existingUser = await StudentModel.findOne({ id: id });
-  return existingUser;
-};
 
 //for instance method
 //const StudentModel = model<TStudent, TStudentModel>('students', studentSchema);
 
 //for static method
-const StudentModel = model<TStudent, IStudentModel>('students', studentSchema);
+const StudentModel = model<TStudent>('students', studentSchema);
 
 export default StudentModel;

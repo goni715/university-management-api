@@ -17,7 +17,7 @@ const createStudentService = async (password:string, studentData: TStudent) => {
    userData.role = 'student';
 
    //set manually generated id
-   userData.id='231'
+   userData.id='232'
 
    //create a user
     const newUser = await UserModel.create(userData); //built-in static method
