@@ -71,7 +71,7 @@ const createStudentValidationSchema = z.object({
     gender: z.enum(['male', 'female', 'others'], {
       errorMap: () => ({ message: '{VALUE} is not supported' }),
     }),
-    dateOfBirth: z.string().trim().optional(),
+    dateOfBirth: z.date().optional(),
     contactNo: z.string().trim(), //.nonempty('Contact Number is required'),
     emergencyContactNo: z.string().trim(), //.nonempty('Emergency Contact Number is required'),
     bloodGroup: z
