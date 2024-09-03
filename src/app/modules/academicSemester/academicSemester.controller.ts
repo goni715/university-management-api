@@ -1,6 +1,6 @@
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { createAcademicSemesterService } from "./academicSemester.service";
+import { createAcademicSemesterService, getAllSemestersService, getSingleSemesterService } from "./academicSemester.service";
 
 const createAcademicSemester = catchAsync(async(req, res, next) => {
     const result = await createAcademicSemesterService(req.body)
@@ -12,4 +12,32 @@ const createAcademicSemester = catchAsync(async(req, res, next) => {
      })
 });
 
-export { createAcademicSemester };
+
+
+const getAllSemesters = catchAsync( async (req, res) =>{
+    const result = await getAllSemestersService();
+    sendResponse(res, {
+        statusCode: 200,
+        status: true,
+        message: 'Academic Semesters are retrieved successfully',
+        data: result,
+     })
+})
+
+
+const getSingleSemester = catchAsync( async (req, res) =>{
+    const {id} = req.params;
+    const result = await getSingleSemesterService(id);
+    sendResponse(res, {
+        statusCode: 200,
+        status: true,
+        message: 'Academic Semesters are retrieved successfully',
+        data: result,
+     })
+});
+
+
+
+
+
+export { createAcademicSemester, getAllSemesters, getSingleSemester };

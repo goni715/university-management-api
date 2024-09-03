@@ -1,4 +1,4 @@
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 export type TGuardian = {
   fatherName: string;
@@ -37,6 +37,7 @@ export interface TStudent {
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImg?: string;
+  admissionSemester: Types.ObjectId;
   isDeleted: boolean;
 }
 
