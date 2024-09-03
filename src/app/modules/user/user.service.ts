@@ -1,8 +1,11 @@
 import config from "../../config";
+import { TAcademicSemester } from "../academicSemester/academicSemester.interface";
+import AcademicSemesterModel from "../academicSemester/academicSemester.model";
 import { TStudent } from "../student/student.interface";
 import StudentModel from "../student/student.model";
 import { NewUser, TUser } from "./user.interface";
 import UserModel from "./user.model";
+import { generateStudentId } from "./user.utils";
 
 
 const createStudentService = async (password:string, studentData: TStudent) => {
@@ -16,8 +19,12 @@ const createStudentService = async (password:string, studentData: TStudent) => {
    //set student 
    userData.role = 'student';
 
+
+   //find academic semester info
+   const admissionSemester = await AcademicSemesterModel.findById(studentData.admissionSemester);
+
    //set manually generated id
-   userData.id='23246'
+   userData.id= await generateStudentId(admissionSemester as TAcademicSemester);
 
    //create a user
     const newUser = await UserModel.create(userData); //built-in static method
@@ -34,7 +41,7 @@ const createStudentService = async (password:string, studentData: TStudent) => {
     //   studentData.id = newUser.id;
     //   studentData.user = newUser._id; //userId-- referceId
     // }
-    return newUser;
+    //return admissionSemester;
   };
 
 

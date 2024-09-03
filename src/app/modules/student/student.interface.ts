@@ -28,7 +28,7 @@ export interface TStudent {
   name: TUserName;
   email: string;
   gender: 'male' | 'female' | 'others'; //union literal type
-  dateOfBirth?: Date;
+  dateOfBirth?: string;
   contactNo: string;
   emergencyContactNo: string;
   bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | ' AB+' | 'AB-' | 'O+' | 'O-';
