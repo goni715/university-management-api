@@ -18,7 +18,7 @@ const getAllFaculties = catchAsync( async (req, res) => {
     sendResponse(res, {
         statusCode: 201,
         status: true,
-        message: 'Academic Faculty is created successfully',
+        message: 'Academic Faculties are retrieved successfully',
         data: result,
      })
 });
