@@ -28,7 +28,9 @@ const academicSemesterSchema = new Schema<TAcademicSemester>({
     enum: Months,
     required: true
   },
-});
+},
+{timestamps: true}
+);
 
 
 

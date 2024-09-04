@@ -31,7 +31,7 @@ const getSingleSemester = catchAsync( async (req, res) =>{
     sendResponse(res, {
         statusCode: 200,
         status: true,
-        message: 'Academic Semesters are retrieved successfully',
+        message: 'Single Academic Semester is retrieved successfully',
         data: result,
      })
 });
@@ -44,7 +44,7 @@ const updateSemester = catchAsync( async (req, res) =>{
     sendResponse(res, {
         statusCode: 200,
         status: true,
-        message: 'Academic Semesters are retrieved successfully',
+        message: 'Academic Semester is updated successfully',
         data: result,
      })
 });

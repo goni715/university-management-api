@@ -10,6 +10,8 @@ const academicFacultySchema = new Schema<TAcademicFaculty>({
         unique: true,
         trim: true
     }
+},{
+    timestamps:true
 })
 
 
