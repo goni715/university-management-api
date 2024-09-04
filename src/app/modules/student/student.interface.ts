@@ -42,3 +42,5 @@ export interface TStudent {
   isDeleted: boolean;
 }
 
+
+

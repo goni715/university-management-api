@@ -3,7 +3,9 @@ import {
   deleteStudentService,
   getAllStudentsService,
   getSingleStudentService,
+  updateStudentService,
 } from './student.service';
+import sendResponse from '../../utils/sendResponse';
 
 
 
@@ -38,14 +40,27 @@ const getSingleStudent = catchAsync(async (req, res) => {
 });
 
 
+const updateStudent = catchAsync( async (req, res) =>{
+  const {id} = req.params;
+  const result = await updateStudentService(id, req.body);
+
+  sendResponse(res, {
+      statusCode: 200,
+      status: true,
+      message: 'Student is updated successfully',
+      data: result,
+   })
+});
+
+
 
 const deleteStudent : RequestHandler = async (req, res, next) => {
    try{
-    const { studentId } = req.params;
-    const result = await deleteStudentService(studentId);
+    const { id } = req.params;
+    const result = await deleteStudentService(id);
     res.status(200).json({
       status: true,
-      message: 'Single student is deleted successfully',
+      message: 'Student is deleted successfully',
       data: result,
     });
 
@@ -54,4 +69,4 @@ const deleteStudent : RequestHandler = async (req, res, next) => {
    }
 };
 
-export {getAllStudents, getSingleStudent, deleteStudent };
+export {getAllStudents, getSingleStudent, updateStudent, deleteStudent };

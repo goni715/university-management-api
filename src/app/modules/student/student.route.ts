@@ -3,13 +3,17 @@ import {
   deleteStudent,
   getAllStudents,
   getSingleStudent,
+  updateStudent,
 } from './student.controller';
+import validationMiddleware from '../../middlewares/validationMiddleware';
+import { updateStudentValidationSchema } from './student.validation';
 
 const router = express.Router();
 
 
 router.get('/get-all-students', getAllStudents);
 router.get('/get-single-student/:studentId', getSingleStudent);
-router.delete('/delete-student/:studentId', deleteStudent);
+router.patch('/update-student/:id', validationMiddleware(updateStudentValidationSchema), updateStudent);
+router.delete('/delete-student/:id', deleteStudent);
 
 export const StudentRoutes = router;
