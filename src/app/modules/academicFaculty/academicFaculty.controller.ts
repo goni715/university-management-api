@@ -16,7 +16,7 @@ const createAcademicFaculty = catchAsync(async(req, res)=>{
 const getAllFaculties = catchAsync( async (req, res) => {
     const result = await getAllFacultiesService();
     sendResponse(res, {
-        statusCode: 201,
+        statusCode: 200,
         status: true,
         message: 'Academic Faculties are retrieved successfully',
         data: result,
@@ -30,7 +30,7 @@ const getSingleFaculty = catchAsync(async (req, res) => {
     const { id } = req.params;
     const result = await getSingleFacultyService(id);
     sendResponse(res, {
-        statusCode: 201,
+        statusCode: 200,
         status: true,
         message: 'Single Academic Faculty is retrieved successfully',
         data: result,

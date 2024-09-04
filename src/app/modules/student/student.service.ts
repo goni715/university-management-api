@@ -1,36 +1,24 @@
 import StudentModel from './student.model';
 import { TStudent } from './student.interface';
+import { Types } from 'mongoose';
 
-const createStudentService = async (studentData: TStudent) => {
-  const existingUser = await StudentModel.isUserExists(studentData?.id); //custom static-method
-  if (existingUser) {
-    throw new Error('User already existed');
-  }
 
-  const result = await StudentModel.create(studentData); //built-in static method
-  return result;
-
-  // const student = new StudentModel(studentData); //create an instance
-  // const existingUser = await student.isUserExists('6'); //custom instance method
-  // if (existingUser) {
-  //   throw new Error('User already existed');
-  // }
-
-  // const result = await student.save(); //bulit-in-instance method
-  //return result;
-};
 
 const getAllStudentsService = async () => {
-  const result = await StudentModel.find();
+  const result = await StudentModel.find().
+                     populate('admissionSemester').
+                     populate({path:'academicDepartment', populate:"academicFaculty"});
+
   return result;
 };
 
 const getSingleStudentService = async (id: string) => {
-  //const result = await StudentModel.findOne({ id });
-  const result = await StudentModel.aggregate([
-    {$match: {id:id}}
-  ])
-  return result[0];
+  const ObjectId = Types.ObjectId;
+  const result = await StudentModel.findOne({ _id : new ObjectId(id)})
+                      .populate('admissionSemester')
+                      .populate({path:'academicDepartment', populate:"academicFaculty"});
+  
+  return result
 };
 
 
@@ -41,4 +29,4 @@ const deleteStudentService = async(id: string) => {
 
 
 
-export { createStudentService, getAllStudentsService, getSingleStudentService, deleteStudentService };
+export { getAllStudentsService, getSingleStudentService, deleteStudentService };

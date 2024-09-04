@@ -8,13 +8,13 @@ const createAcademicDepartmentService = async (PostBody: TAcademicDepartment) =>
 };
 
 const getAllDepartmentsService = async () => {
-  const result = await AcademicDepartmentModel.find();
+  const result = await AcademicDepartmentModel.find().populate('academicFaculty');
   return result;
 };
 
 const getSingleDepartmentService = async (id: string) => {
   const ObjectId = Types.ObjectId;
-  const result = await AcademicDepartmentModel.findOne({ _id: new ObjectId(id) });
+  const result = await AcademicDepartmentModel.findOne({ _id: new ObjectId(id) }).populate('academicFaculty');
   return result;
 };
 

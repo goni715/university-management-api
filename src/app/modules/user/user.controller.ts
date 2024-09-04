@@ -11,7 +11,6 @@ const createStudent = async (req: Request, res: Response, next: NextFunction) =>
      
        const result = await UserServices.createStudentService(password, studentData);
   
-  
       // res.status(201).json({
       //   status: true,
       //   message: 'Student is created successfully',

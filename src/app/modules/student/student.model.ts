@@ -85,16 +85,21 @@ const guardianSchema = new Schema<TGuardian>({
 
 const studentSchema = new Schema<TStudent>(
   {
-    id: { type: String, trim: true, unique: true, required:[true, 'ID is required'] },
+    id: {
+      type: String,
+      trim: true,
+      unique: true,
+      required: [true, 'ID is required'],
+    },
     name: {
       type: userNameSchema,
       required: true,
     },
-    user:{
+    user: {
       type: Schema.Types.ObjectId,
-      required:[true, 'user id is required'],
+      required: [true, 'user id is required'],
       ref: 'users',
-      unique: true
+      unique: true,
     },
     email: {
       type: String,
@@ -174,7 +179,13 @@ const studentSchema = new Schema<TStudent>(
     profileImg: { type: String },
     admissionSemester: {
       type: Schema.Types.ObjectId,
-      ref: "AcademicSemester"
+      ref: 'AcademicSemester',
+      required: true,
+    },
+    academicDepartment: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicDepartment',
+      required: true,
     },
     isDeleted: {
       type: Boolean,
@@ -199,8 +210,6 @@ virtual.get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
 });
 
-
-
 // studentSchema.pre('find', function(next){
 //   this.find({isDeleted: { $ne:true }});
 //   next()
@@ -215,8 +224,6 @@ studentSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
-
-
 
 //for instance method
 //const StudentModel = model<TStudent, TStudentModel>('students', studentSchema);

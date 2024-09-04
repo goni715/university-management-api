@@ -16,7 +16,7 @@ const createAcademicDepartment = catchAsync(async(req, res)=>{
 const getAllDepartments = catchAsync( async (req, res) => {
     const result = await getAllDepartmentsService();
     sendResponse(res, {
-        statusCode: 201,
+        statusCode: 200,
         status: true,
         message: 'Academic Departments are retrieved successfully',
         data: result,
@@ -30,7 +30,7 @@ const getSingleDepartment = catchAsync(async (req, res) => {
     const { id } = req.params;
     const result = await getSingleDepartmentService(id);
     sendResponse(res, {
-        statusCode: 201,
+        statusCode: 200,
         status: true,
         message: 'Academic Department is retrieved successfully',
         data: result,
