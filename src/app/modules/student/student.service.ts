@@ -5,10 +5,35 @@ import httpStatus from 'http-status';
 import UserModel from '../user/user.model';
 import { TStudent } from './student.interface';
 
-const getAllStudentsService = async () => {
-  const result = await StudentModel.find()
-    .populate('admissionSemester')
-    .populate({ path: 'academicDepartment', populate: 'academicFaculty' });
+const getAllStudentsService = async (query: Record<string, unknown>) => {
+  
+  //{email: { $regex: query.searchKey, $options: 'i}}
+  //{permanentAddress: { $regex: query.searchKey, $options: 'i}}
+  //{presentAddress: { $regex: query.searchKey, $options: 'i}}
+  //{name.firstName: { $regex: query.searchKey, $options: 'i}}
+
+  let searchKey = '';
+  if(query?.searchKey){
+    searchKey = query.searchKey as string;
+  }
+  
+  const searchFields = ['email', 'permanentAddress', 'presentAddress', 'name.firstName', 'name.middleName', 'name.lastName', 'contactNo', 'emergencyContactNo', 'guardian.fatherName', 'guardian.fatherOccupation', 'guardian.fatherContactNo', 'guardian.motherName', 'guardian.motherContactNo', 'guardian.motherOccupation'];
+
+  let result;
+
+  if (searchKey !=='') {
+    result = await StudentModel.find({
+      $or: searchFields.map((field) => ({
+        [field]: { $regex: searchKey && searchKey, $options: 'i' },
+      })),
+    })
+      .populate('admissionSemester')
+      .populate({ path: 'academicDepartment', populate: 'academicFaculty' });
+  } else {
+    result = await StudentModel.find()
+      .populate('admissionSemester')
+      .populate({ path: 'academicDepartment', populate: 'academicFaculty' });
+  }
 
   return result;
 };

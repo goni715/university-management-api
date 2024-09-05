@@ -18,7 +18,9 @@ const catchAsync = (fn: RequestHandler)=>{
 
 
 const getAllStudents = catchAsync( async (req, res) => {
-    const result = await getAllStudentsService();
+  const query = req.query;
+
+    const result = await getAllStudentsService(query);
     res.status(200).json({
       status: true,
       message: 'Students are retrieved successfully',
