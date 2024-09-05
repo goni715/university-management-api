@@ -4,6 +4,7 @@ import { UserRoutes } from './app/modules/user/user.route';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import notFound from './app/middlewares/notFound';
 import router from './app/routes';
+import morgan from 'morgan';
 
 const app: Application = express();
 
@@ -11,6 +12,7 @@ const app: Application = express();
 // parsers
 app.use(express.json());
 app.use(cors());
+app.use(morgan('dev'))
 
 
 //application routes

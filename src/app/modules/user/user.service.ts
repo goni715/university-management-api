@@ -7,7 +7,7 @@ import StudentModel from '../student/student.model';
 import { NewUser, TUser } from './user.interface';
 import UserModel from './user.model';
 import { generateStudentId } from './user.utils';
-import AppError from '../../utils/AppError';
+import AppError from '../../errors/AppError';
 
 const createStudentService = async (
   password: string,
@@ -59,10 +59,10 @@ const createStudentService = async (
     await session.endSession();
 
     return newStudent[0];
-  } catch (err:any) {
+  } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
-    throw new Error(err)
+    throw new Error(err);
   }
 };
 

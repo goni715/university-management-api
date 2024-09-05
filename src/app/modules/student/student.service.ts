@@ -1,6 +1,6 @@
 import StudentModel from './student.model';
 import mongoose, { Types } from 'mongoose';
-import AppError from '../../utils/AppError';
+import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 import UserModel from '../user/user.model';
 import { TStudent } from './student.interface';
@@ -22,11 +22,10 @@ const getSingleStudentService = async (id: string) => {
   return result;
 };
 
-
-
-
-const updateStudentService = async (id: string, updateData: Partial<TStudent>) => {
-
+const updateStudentService = async (
+  id: string,
+  updateData: Partial<TStudent>,
+) => {
   const { name, guardian, localGuardian, ...remainingStudentData } = updateData;
 
   const modifiedUpdatedData: Record<string, unknown> = {
@@ -62,65 +61,62 @@ const updateStudentService = async (id: string, updateData: Partial<TStudent>) =
     }
   }
 
-   const ObjectId = Types.ObjectId;
-   const result = await StudentModel.updateOne(
-     {
-      _id: new ObjectId(id)
-     },
-     modifiedUpdatedData
-     );
-   return result;
- };
- 
-
-
+  const ObjectId = Types.ObjectId;
+  const result = await StudentModel.updateOne(
+    {
+      _id: new ObjectId(id),
+    },
+    modifiedUpdatedData,
+  );
+  return result;
+};
 
 const deleteStudentService = async (id: string) => {
-
   const session = await mongoose.startSession();
 
-  try{
+  try {
+    session.startTransaction();
 
-     session.startTransaction();
-
-    const existStudent = await StudentModel.findOne({id});
+    const existStudent = await StudentModel.findOne({ id });
     console.log(existStudent);
-    if(!existStudent){
+    if (!existStudent) {
       throw new AppError(404, 'This ID does not exist');
     }
 
-
-       //delete a user (transaction-01)
-       const deletedUser = await UserModel.updateOne({ id }, { isDeleted: true }, {session});
-       if(!deletedUser.modifiedCount){
-         throw new AppError(httpStatus.BAD_REQUEST, 'Failled to delete user');
-       }
-
-
-
-    //delete a student (transaction-02)
-    const deletedStudent = await StudentModel.updateOne({ id }, { isDeleted: true }, {session});
-    if(!deletedStudent.modifiedCount){
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failled to delete student');
+    //delete a user (transaction-01)
+    const deletedUser = await UserModel.updateOne(
+      { id },
+      { isDeleted: true },
+      { session },
+    );
+    if (!deletedUser.modifiedCount) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failled to delete user');
     }
 
-
- 
-
+    //delete a student (transaction-02)
+    const deletedStudent = await StudentModel.updateOne(
+      { id },
+      { isDeleted: true },
+      { session },
+    );
+    if (!deletedStudent.modifiedCount) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failled to delete student');
+    }
 
     await session.commitTransaction();
     await session.endSession();
 
     return deletedStudent;
-
-   
-
-  }catch(err:any){
+  } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
-    throw new Error(err)
+    throw new Error(err);
   }
-  
 };
 
-export { getAllStudentsService, getSingleStudentService, updateStudentService, deleteStudentService };
+export {
+  getAllStudentsService,
+  getSingleStudentService,
+  updateStudentService,
+  deleteStudentService,
+};

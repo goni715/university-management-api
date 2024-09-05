@@ -7,7 +7,7 @@ import { createAcademicDepartment, getAllDepartments, getSingleDepartment, updat
 const router = express.Router();
 
 
-router.post('/create-academic-department', validationMiddleware(createAcademicDepartmentValidationSchema), createAcademicDepartment);
+router.post('/create-academic-department', createAcademicDepartment);
 router.get('/get-all-departments', getAllDepartments);
 router.get('/get-single-department/:id', getSingleDepartment);
 router.patch('/update-department/:id', validationMiddleware(updateAcademicDepartmentValidationSchema), updateDepartment);
