@@ -32,9 +32,9 @@ const getAllSemestersService = async () => {
 };
 
 const getSingleSemesterService = async (id: string) => {
-  const ObjectId = Types.ObjectId;
-  const result = await AcademicSemesterModel.findOne({ _id: new ObjectId(id) });
-  return result;
+    const ObjectId = Types.ObjectId;
+    const result = await AcademicSemesterModel.findOne({ _id: new ObjectId(id) });
+    return result;
 };
 
 

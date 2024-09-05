@@ -14,7 +14,7 @@ const getAllDepartmentsService = async () => {
 
 const getSingleDepartmentService = async (id: string) => {
   const ObjectId = Types.ObjectId;
-  const result = await AcademicDepartmentModel.findOne({ _id: new ObjectId(id) }).populate('academicFaculty');
+  const result = await AcademicDepartmentModel.findById(id).populate('academicFaculty');
   return result;
 };
 

@@ -15,7 +15,7 @@ const getAllStudentsService = async () => {
 
 const getSingleStudentService = async (id: string) => {
   const ObjectId = Types.ObjectId;
-  const result = await StudentModel.findOne({ _id: new ObjectId(id) })
+  const result = await StudentModel.findOne({ id: id})
     .populate('admissionSemester')
     .populate({ path: 'academicDepartment', populate: 'academicFaculty' });
 
