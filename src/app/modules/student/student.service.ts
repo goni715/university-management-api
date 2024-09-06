@@ -12,30 +12,55 @@ const getAllStudentsService = async (query: Record<string, unknown>) => {
   //{presentAddress: { $regex: query.searchKey, $options: 'i}}
   //{name.firstName: { $regex: query.searchKey, $options: 'i}}
 
-  let searchKey = '';
-  if(query?.searchKey){
-    searchKey = query.searchKey as string;
+  let searchTerm = '';
+  if(query?.searchTerm){
+    searchTerm = query.searchTerm as string;
   }
   
   const searchFields = ['email', 'permanentAddress', 'presentAddress', 'name.firstName', 'name.middleName', 'name.lastName', 'contactNo', 'emergencyContactNo', 'guardian.fatherName', 'guardian.fatherOccupation', 'guardian.fatherContactNo', 'guardian.motherName', 'guardian.motherContactNo', 'guardian.motherOccupation'];
 
-  let result;
+  
+  const searchQuery = StudentModel.find({
+    $or: searchFields.map((field) => ({
+      [field]: { $regex: searchTerm, $options: 'i' },
+    })),
+  })
 
-  if (searchKey !=='') {
-    result = await StudentModel.find({
-      $or: searchFields.map((field) => ({
-        [field]: { $regex: searchKey && searchKey, $options: 'i' },
-      })),
-    })
+
+
+   //filtering
+   const excludeFields = ['searchTerm', 'sort', 'limit'];
+   const queryObj = {...query}
+
+   excludeFields.map((el)=> delete queryObj[el]);
+
+
+   const filterQuery = searchQuery
+      .find(queryObj)
       .populate('admissionSemester')
       .populate({ path: 'academicDepartment', populate: 'academicFaculty' });
-  } else {
-    result = await StudentModel.find()
-      .populate('admissionSemester')
-      .populate({ path: 'academicDepartment', populate: 'academicFaculty' });
-  }
 
-  return result;
+    
+
+    //sorting
+    let sort = '-createdAt' // by default
+    if(query?.sort){
+      sort=query.sort as string;
+    }
+
+    const sortQuery = filterQuery.sort(sort) //-createdAt
+
+
+    //limiting
+    let limit = 1;
+    if(query?.limit){
+      limit = query.limit as number;
+    }
+
+    const limitQuery = await sortQuery.limit(limit);
+
+
+    return limitQuery;
 };
 
 const getSingleStudentService = async (id: string) => {
