@@ -210,25 +210,22 @@ virtual.get(function () {
   return `${this?.name?.firstName} ${this?.name?.middleName} ${this?.name?.lastName}`;
 });
 
-// studentSchema.pre('find', function(next){
-//   this.find({isDeleted: { $ne:true }});
-//   next()
-// })
+studentSchema.pre('find', function(next){
+  this.find({isDeleted: { $ne:true }});
+  next()
+})
 
-// studentSchema.pre('findOne', function(next){
-//   this.find({isDeleted: { $ne:true }});
-//   next()
-// })
+studentSchema.pre('findOne', function(next){
+  this.where({isDeleted: { $ne:true }});
+  next()
+})
 
 studentSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
 
-//for instance method
-//const StudentModel = model<TStudent, TStudentModel>('students', studentSchema);
 
-//for static method
 const StudentModel = model<TStudent>('students', studentSchema);
 
 export default StudentModel;

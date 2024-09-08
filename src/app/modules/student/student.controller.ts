@@ -32,8 +32,8 @@ const getAllStudents = catchAsync( async (req, res) => {
 
 
 const getSingleStudent = catchAsync(async (req, res) => {
-    const { studentId } = req.params;
-    const result = await getSingleStudentService(studentId);
+    const { id } = req.params;
+    const result = await getSingleStudentService(id);
     res.status(200).json({
       status: true,
       message: 'Single student is retrieved successfully',

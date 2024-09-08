@@ -12,7 +12,7 @@ const router = express.Router();
 
 
 router.get('/get-all-students', getAllStudents);
-router.get('/get-single-student/:studentId', getSingleStudent);
+router.get('/get-single-student/:id', getSingleStudent);
 router.patch('/update-student/:id', validationMiddleware(updateStudentValidationSchema), updateStudent);
 router.delete('/delete-student/:id', deleteStudent);
 

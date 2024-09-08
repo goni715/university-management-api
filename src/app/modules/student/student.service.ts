@@ -8,7 +8,6 @@ import QueryBuilder from '../../builder/Querybuilder';
 import { studentSearchableFields } from './student.constant';
 
 const getAllStudentsService = async (query: Record<string, unknown>) => {
-  
   //{email: { $regex: query.searchKey, $options: 'i}}
   //{permanentAddress: { $regex: query.searchKey, $options: 'i}}
   //{presentAddress: { $regex: query.searchKey, $options: 'i}}
@@ -18,51 +17,43 @@ const getAllStudentsService = async (query: Record<string, unknown>) => {
   // if(query?.searchTerm){
   //   searchTerm = query.searchTerm as string;
   // }
-  
+
   // const searchFields = ['email', 'permanentAddress', 'presentAddress', 'name.firstName', 'name.middleName', 'name.lastName', 'contactNo', 'emergencyContactNo', 'guardian.fatherName', 'guardian.fatherOccupation', 'guardian.fatherContactNo', 'guardian.motherName', 'guardian.motherContactNo', 'guardian.motherOccupation'];
 
-  
   // const searchQuery = StudentModel.find({
   //   $or: searchFields.map((field) => ({
   //     [field]: { $regex: searchTerm, $options: 'i' },
   //   })),
   // })
 
-
-
-   //filtering
+  //filtering
   //  const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
   //  const queryObj = {...query}
 
   //  excludeFields.map((el)=> delete queryObj[el]);
-
 
   //  const filterQuery = searchQuery
   //     .find(queryObj)
   //     .populate('admissionSemester')
   //     .populate({ path: 'academicDepartment', populate: 'academicFaculty' });
 
-    
+  //sorting
+  // let sort = '-createdAt' // by default
+  // if(query?.sort){
+  //   sort=query.sort as string;
+  // }
 
-    //sorting
-    // let sort = '-createdAt' // by default
-    // if(query?.sort){
-    //   sort=query.sort as string;
-    // }
+  // const sortQuery = filterQuery.sort(sort) //-createdAt
 
-    // const sortQuery = filterQuery.sort(sort) //-createdAt
+  //limiting
+  // let limit = 10;
+  // if(query?.limit){
+  //   limit = query.limit as number;
+  // }
 
+  // const limitQuery = sortQuery.limit(limit);
 
-    //limiting
-    // let limit = 10;
-    // if(query?.limit){
-    //   limit = query.limit as number;
-    // }
-
-    // const limitQuery = sortQuery.limit(limit);
-
-    
-    //paginatating
+  //paginatating
   //   let page = 1;
   //   let skip=0;
 
@@ -73,45 +64,38 @@ const getAllStudentsService = async (query: Record<string, unknown>) => {
 
   //  const paginateQuery = limitQuery.skip(skip);
 
-
-
-   //field limiting
-   //fields = query.fields // fields: 'name, email'
+  //field limiting
+  //fields = query.fields // fields: 'name, email'
   //  let fields = '';
   //  if(query.fields){
   //   fields = (query.fields as string).split(',').join('') //fields = 'name email'
   //  }
 
-
   //  const fieldQuery = await paginateQuery.select(fields);
-
 
   //   return fieldQuery;;
 
+  const queryBuilderInstance = new QueryBuilder(
+    StudentModel.find()
+      .populate('admissionSemester')
+      .populate({ path: 'academicDepartment', populate: 'academicFaculty' }),
+    query,
+  );
+  const studentQuery = queryBuilderInstance
+    .search(studentSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
+  const result = await studentQuery.modelQuery;
 
-    const queryBuilderInstance = new QueryBuilder(
-      StudentModel.find()
-         .populate('admissionSemester')
-         .populate({ path: 'academicDepartment', populate: 'academicFaculty' }
-         ),
-         query
-     );
-    const studentQuery = queryBuilderInstance.search(studentSearchableFields).filter().sort().paginate().fields();
-
-    const result = await studentQuery.modelQuery;
-
-    return result;
-
-
-
-
-
+  return result;
 };
 
 const getSingleStudentService = async (id: string) => {
   const ObjectId = Types.ObjectId;
-  const result = await StudentModel.findOne({ id: id})
+  const result = await StudentModel.findOne({ _id: new ObjectId(id) })
     .populate('admissionSemester')
     .populate({ path: 'academicDepartment', populate: 'academicFaculty' });
 
@@ -167,21 +151,42 @@ const updateStudentService = async (
   return result;
 };
 
+
+
 const deleteStudentService = async (id: string) => {
   const session = await mongoose.startSession();
 
   try {
     session.startTransaction();
 
-    const existStudent = await StudentModel.findOne({ id });
-    console.log(existStudent);
+    const ObjectId = Types.ObjectId;
+
+
+    const existStudent = await StudentModel.findOne({ _id: new ObjectId(id) });
     if (!existStudent) {
       throw new AppError(404, 'This ID does not exist');
     }
 
-    //delete a user (transaction-01)
+
+
+     //delete a student (transaction-01)
+     const deletedStudent = await StudentModel.findByIdAndUpdate(
+      id,
+      { isDeleted: true },
+      { new: true, session },
+    );
+    if (!deletedStudent) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failled to delete student');
+    }
+
+
+     // get user _id from deletedStudent
+     const userId = deletedStudent.user;
+
+
+    //delete a user (transaction-02)
     const deletedUser = await UserModel.updateOne(
-      { id },
+      { _id: new ObjectId(userId) },
       { isDeleted: true },
       { session },
     );
@@ -189,15 +194,7 @@ const deleteStudentService = async (id: string) => {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failled to delete user');
     }
 
-    //delete a student (transaction-02)
-    const deletedStudent = await StudentModel.updateOne(
-      { id },
-      { isDeleted: true },
-      { session },
-    );
-    if (!deletedStudent.modifiedCount) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failled to delete student');
-    }
+   
 
     await session.commitTransaction();
     await session.endSession();
