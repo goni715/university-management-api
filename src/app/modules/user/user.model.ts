@@ -2,6 +2,7 @@ import { model, Schema } from 'mongoose';
 import { TUser } from './user.interface';
 import bcrypt from 'bcryptjs';
 import config from '../../config';
+import validator from 'validator';
 
 const userSchema = new Schema<TUser>(
   {
@@ -10,6 +11,16 @@ const userSchema = new Schema<TUser>(
       required: true,
       trim: true,
       unique: true
+    },
+    email: {
+      type: String,
+      trim: true,
+      required: [true, 'Email is required'],
+      unique: true,
+      validate: {
+        validator: (value: string) => validator.isEmail(value),
+        message: '{VALUE} is not valid email',
+      },
     },
     password: {
       type: String,

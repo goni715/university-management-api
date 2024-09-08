@@ -30,6 +30,29 @@ const createStudent = async (req: Request, res: Response, next: NextFunction) =>
   };
 
 
+
+
+  const createAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+        const {password, adminData} = req.body;
+     
+       const result = await UserServices.createAdminService(password, adminData);
+
+      sendResponse(res, {
+         statusCode: 201,
+         status: true,
+         message: 'Admin is created successfully',
+         data: result,
+      })
+
+    } catch (err:any) {
+      next(err);
+    }
+  };
+
+
   export {
-    createStudent
+    createStudent,
+    createAdmin
   }

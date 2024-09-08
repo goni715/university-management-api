@@ -4,7 +4,6 @@ import UserModel from './user.model';
 import StudentModel from '../student/student.model';
 
 
-//---------   ---another way using student model---------------------------------------------------//
 
 const findLastStudentId = async (id : Types.ObjectId) => {
     const lastStudent = await StudentModel.findOne(
@@ -47,3 +46,45 @@ export const generateStudentId = async (
   
     return incrementId;
   };
+
+
+
+
+
+// ------------------------------------Generate Admin Id part -------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------//
+  
+// Admin ID
+export const findLastAdminId = async () => {
+  const lastAdmin = await UserModel.findOne(
+    {
+      role: 'admin',
+    },
+    {
+      id: 1,
+      _id: 0,
+    },
+  )
+    .sort({
+      createdAt: -1,
+    })
+    .lean();
+
+  return lastAdmin?.id ? lastAdmin.id.substring(2) : undefined;
+};
+
+
+
+export const generateAdminId = async () => {
+  let currentId = (0).toString();
+  const lastAdminId = await findLastAdminId();
+
+  if (lastAdminId) {
+    currentId = lastAdminId.substring(2);
+  }
+
+  let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
+
+  incrementId = `A-${incrementId}`;
+  return incrementId;
+};

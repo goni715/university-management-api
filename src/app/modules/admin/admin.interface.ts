@@ -8,8 +8,8 @@ export type TUserName = {
 
 
 export type TAdmin = {
-    id: string;
-    user: Types.ObjectId;
+    id:string,
+    user: Types.ObjectId,
     name: TUserName,
     designation: string;
     gender: 'male' | 'female' | 'others',

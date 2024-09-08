@@ -2,6 +2,9 @@ import { z } from "zod";
 
 
 const userValidationSchema = z.object({
+    email: z.string().email({
+        message: "Invalid email Address"
+    }),
     password: z.string({
         invalid_type_error: "Password must be a string",
     })
@@ -10,4 +13,4 @@ const userValidationSchema = z.object({
 })
 
 
-export default userValidationSchema;
+//export default userValidationSchema;
