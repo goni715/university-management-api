@@ -29,7 +29,7 @@ const getAllStudentsService = async (query: Record<string, unknown>) => {
 
 
    //filtering
-   const excludeFields = ['searchTerm', 'sort', 'limit'];
+   const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
    const queryObj = {...query}
 
    excludeFields.map((el)=> delete queryObj[el]);
@@ -52,15 +52,39 @@ const getAllStudentsService = async (query: Record<string, unknown>) => {
 
 
     //limiting
-    let limit = 1;
+    let limit = 10;
     if(query?.limit){
       limit = query.limit as number;
     }
 
-    const limitQuery = await sortQuery.limit(limit);
+    const limitQuery = sortQuery.limit(limit);
+
+    
+    //paginatating
+    let page = 1;
+    let skip=0;
+
+    if(query?.page){
+      page = Number(query.page);
+      skip = Number(page-1) * limit
+    }
+
+   const paginateQuery = limitQuery.skip(skip);
 
 
-    return limitQuery;
+
+   //field limiting
+   //fields = query.fields // fields: 'name, email'
+   let fields = '';
+   if(query.fields){
+    fields = (query.fields as string).split(',').join('') //fields = 'name email'
+   }
+
+
+   const fieldQuery = await paginateQuery.select(fields);
+
+
+    return fieldQuery;;
 };
 
 const getSingleStudentService = async (id: string) => {

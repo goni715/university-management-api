@@ -207,7 +207,7 @@ const studentSchema = new Schema<TStudent>(
 //virtuals
 const virtual = studentSchema.virtual('fullName');
 virtual.get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+  return `${this?.name?.firstName} ${this?.name?.middleName} ${this?.name?.lastName}`;
 });
 
 // studentSchema.pre('find', function(next){
