@@ -6,10 +6,13 @@ import { TStudent } from '../student/student.interface';
 import StudentModel from '../student/student.model';
 import { TUser } from './user.interface';
 import UserModel from './user.model';
-import { generateAdminId, generateStudentId } from './user.utils';
+import { generateAdminId, generateFacultyId, generateStudentId } from './user.utils';
 import AppError from '../../errors/AppError';
 import { TAdmin } from '../admin/admin.interface';
 import { AdminModel } from '../admin/admin.model';
+import { TFaculty } from '../faculty/faculty.interface';
+import AcademicDepartmentModel from '../academicDepartment/academicDepartment.model';
+import FacultyModel from '../faculty/faculty.model';
 
 
 const createStudentService = async (
@@ -124,10 +127,74 @@ const createAdminService = async (
   }
 };
 
+const createFacultyService = async (
+  password: string,
+  facultyData: TFaculty,
+) => {
+  
+    // create a user object
+    const userData: Partial<TUser> = {};
+
+    //if password is not given, use default password
+    userData.password = password || (config.default_password as string);
+
+    //set faculty role
+    userData.role = 'faculty';
+    //set faculty email
+    userData.email = facultyData.email;
+
+     // find academic department info
+  const academicDepartment = await AcademicDepartmentModel.findById(
+    facultyData.academicDepartment,
+  );
+
+  if (!academicDepartment) {
+    throw new AppError(400, 'Academic department not found');
+  }
+
+  //set academic FacultyId
+  facultyData.academicFaculty = academicDepartment?.academicFaculty;
+
+    const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    //set manually generated id
+    userData.id = await generateFacultyId();
+
+    //create a user (transaction-01)
+    const newUser = await UserModel.create([userData], { session }); //built-in static method
+    if (!newUser.length) {
+      throw new AppError(400, 'Failled to create user');
+    }
+
+    //set id, _id as user
+    facultyData.id = newUser[0].id;
+    facultyData.user = newUser[0]._id;
+
+    //create a admin (transaction-02)
+    const newFaculty = await FacultyModel.create([facultyData], { session });
+
+    if (!newFaculty.length) {
+      throw new AppError(400, 'Failled to create a Faculty');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return newFaculty[0];
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err);
+  }
+};
 
 
 
 export const UserServices = {
   createStudentService,
-  createAdminService
+  createAdminService,
+  createFacultyService
 };

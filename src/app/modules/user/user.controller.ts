@@ -52,7 +52,30 @@ const createStudent = async (req: Request, res: Response, next: NextFunction) =>
   };
 
 
+  
+  const createFaculty = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+        const {password, facultyData} = req.body;
+     
+       const result = await UserServices.createFacultyService(password, facultyData);
+
+      sendResponse(res, {
+         statusCode: 201,
+         status: true,
+         message: 'Faculty is created successfully',
+         data: result,
+      })
+
+    } catch (err:any) {
+      next(err);
+    }
+  };
+
+
+
   export {
     createStudent,
-    createAdmin
+    createAdmin,
+    createFaculty
   }
