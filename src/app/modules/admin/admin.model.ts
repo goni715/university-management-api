@@ -63,7 +63,7 @@ const adminSchema = new Schema<TAdmin>(
       type: String,
       required: [true, 'Emergency contact number is required'],
     },
-    bloogGroup: {
+    bloodGroup: {
       type: String,
       enum: {
         values: BloodGroup,
@@ -97,9 +97,9 @@ const adminSchema = new Schema<TAdmin>(
 adminSchema.virtual('fullName').get(function () {
   return (
     this?.name?.firstName +
-    '' +
+    ' ' +
     this?.name?.middleName +
-    '' +
+    ' ' +
     this?.name?.lastName
   );
 });

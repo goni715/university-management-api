@@ -38,14 +38,14 @@ export const updateUserNameValidationSchema = z.object({
 
 
 export const updateAdminValidationSchema = z.object({
-    name: createUserNameValidationSchema,
+    name: updateUserNameValidationSchema,
     email: z.string().email().optional(),
     designation: z.string().optional(),
     gender: z.enum([...Gender] as [string, ...string[]]).optional(),
     dateOfBirth: z.string().optional(),
     contactNo: z.string().optional(),
     emergencyContactNo: z.string().optional(),
-    bloogGroup: z.enum([...BloodGroup] as [string, ...string[]] ).optional(),
+    bloodGroup: z.enum([...BloodGroup] as [string, ...string[]] ).optional(),
     presentAddress: z.string().optional(),
     permanentAddress: z.string().optional(),
     profileImg: z.string().optional(),
