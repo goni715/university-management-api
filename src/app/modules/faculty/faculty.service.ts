@@ -79,26 +79,26 @@ const deleteFacultyService = async (id: string) => {
     const ObjectId = Types.ObjectId;
 
 
-    const existStudent = await FacultyModel.findOne({ _id: new ObjectId(id) });
-    if (!existStudent) {
+    const existFaculty = await FacultyModel.findOne({ _id: new ObjectId(id) });
+    if (!existFaculty) {
       throw new AppError(404, 'This ID does not exist');
     }
 
 
 
-     //delete a student (transaction-01)
-     const deletedStudent = await FacultyModel.findByIdAndUpdate(
+     //delete a faculty (transaction-01)
+     const deletedFaculty = await FacultyModel.findByIdAndUpdate(
       id,
       { isDeleted: true },
       { new: true, session },
     );
-    if (!deletedStudent) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failled to delete student');
+    if (!deletedFaculty) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failled to delete faculty');
     }
 
 
-     // get user _id from deletedStudent
-     const userId = deletedStudent.user;
+     // get user _id from deletedFaculty
+     const userId = deletedFaculty.user;
 
 
     //delete a user (transaction-02)
@@ -116,7 +116,7 @@ const deleteFacultyService = async (id: string) => {
     await session.commitTransaction();
     await session.endSession();
 
-    return deletedStudent;
+    return deletedFaculty;
   } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
@@ -125,8 +125,8 @@ const deleteFacultyService = async (id: string) => {
 };
 
 export {
-  getAllAdminsService,
-  getSingleAdminService,
-  updateAdminService,
-  deleteAdminService,
+  getAllFacultiesService,
+  getSingleFacultyService,
+  updateFacultyService,
+  deleteFacultyService,
 };

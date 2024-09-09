@@ -62,7 +62,7 @@ class QueryBuilder<T> {
 
   //field limiting
   fields(){
-    const fields = (this?.query?.fields as string)?.split(',')?.join('') || '';
+    const fields = (this?.query?.fields as string)?.split(',')?.join('') || ''; 
 
     this.modelQuery = this.modelQuery.select(fields);
     return this;

@@ -1,18 +1,17 @@
-import { Request, RequestHandler, Response, NextFunction } from 'express';
-
+import { RequestHandler} from 'express';
 import sendResponse from '../../utils/sendResponse';
 import catchAsync from '../../utils/catchAsync';
-import { deleteAdminService, getAllAdminsService, getSingleAdminService, updateAdminService } from './admin.service';
+import { deleteFacultyService, getAllFacultiesService, getSingleFacultyService, updateFacultyService } from './faculty.service';
 
 
 
-const getAllAdmins = catchAsync( async (req, res) => {
+const getAllFaculties = catchAsync( async (req, res) => {
   const query = req?.query;
 
-    const result = await getAllAdminsService(query);
+    const result = await getAllFacultiesService(query);
     res.status(200).json({
       status: true,
-      message: 'Admins are retrieved successfully',
+      message: 'Faculties are retrieved successfully',
       data: result,
     });
 });
@@ -20,38 +19,38 @@ const getAllAdmins = catchAsync( async (req, res) => {
 
 
 
-const getSingleAdmin = catchAsync(async (req, res) => {
+const getSingleFaculty = catchAsync(async (req, res) => {
     const { id } = req.params;
-    const result = await getSingleAdminService(id);
+    const result = await getSingleFacultyService(id);
     res.status(200).json({
       status: true,
-      message: 'Admin is retrieved successfully',
+      message: 'Faculty is retrieved successfully',
       data: result,
     });
 });
 
 
-const updateAdmin = catchAsync( async (req, res) =>{
+const updateFaculty = catchAsync( async (req, res) =>{
   const {id} = req.params;
-  const result = await updateAdminService(id, req.body);
+  const result = await updateFacultyService(id, req.body);
 
   sendResponse(res, {
       statusCode: 200,
       status: true,
-      message: 'Admin is updated successfully',
+      message: 'Faculty is updated successfully',
       data: result,
    })
 });
 
 
 
-const deleteAdmin : RequestHandler = async (req, res, next) => {
+const deleteFaculty : RequestHandler = async (req, res, next) => {
    try{
     const { id } = req.params;
-    const result = await deleteAdminService(id);
+    const result = await deleteFacultyService(id);
     res.status(200).json({
       status: true,
-      message: 'Admin is deleted successfully',
+      message: 'Faculty is deleted successfully',
       data: result,
     });
 
@@ -60,4 +59,4 @@ const deleteAdmin : RequestHandler = async (req, res, next) => {
    }
 };
 
-export {getAllAdmins, getSingleAdmin, updateAdmin, deleteAdmin };
+export {getAllFaculties, getSingleFaculty, updateFaculty, deleteFaculty };
