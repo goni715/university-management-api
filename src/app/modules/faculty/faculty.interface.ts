@@ -18,7 +18,7 @@ export type TUserName = {
 }
 
 
-export type TAdmin = {
+export type TFaculty = {
     id:string,
     user: Types.ObjectId,
     name: TUserName,
@@ -32,5 +32,7 @@ export type TAdmin = {
     presentAddress: string;
     permanentAddress: string;
     profileImg: string;
+    academicDepartment: Types.ObjectId,
+    academicFaculty: Types.ObjectId,
     isDeleted: boolean;
 }
