@@ -1,6 +1,6 @@
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { createAcademicFacultyService, getAllFacultiesService, getSingleFacultyService, updateFacultyService } from "./academicFaculty.service";
+import { createAcademicFacultyService, getAllAcademicFacultiesService, getSingleAcademicFacultyService, updateAcademicFacultyService} from "./academicFaculty.service";
 
 const createAcademicFaculty = catchAsync(async(req, res)=>{
     const result = await createAcademicFacultyService(req.body);
@@ -13,8 +13,8 @@ const createAcademicFaculty = catchAsync(async(req, res)=>{
 })
 
 
-const getAllFaculties = catchAsync( async (req, res) => {
-    const result = await getAllFacultiesService();
+const getAllAcademicFaculties = catchAsync( async (req, res) => {
+    const result = await getAllAcademicFacultiesService();
     sendResponse(res, {
         statusCode: 200,
         status: true,
@@ -26,21 +26,21 @@ const getAllFaculties = catchAsync( async (req, res) => {
 
 
 
-const getSingleFaculty = catchAsync(async (req, res) => {
+const getSingleAcademicFaculty = catchAsync(async (req, res) => {
     const { id } = req.params;
-    const result = await getSingleFacultyService(id);
+    const result = await getSingleAcademicFacultyService(id);
     sendResponse(res, {
         statusCode: 200,
         status: true,
-        message: 'Single Academic Faculty is retrieved successfully',
+        message: 'Academic Faculty is retrieved successfully',
         data: result,
      })
 });
 
 
-const updateFaculty = catchAsync( async (req, res) =>{
+const updateAcademicFaculty = catchAsync( async (req, res) =>{
     const {id} = req.params;
-    const result = await updateFacultyService(id, req.body);
+    const result = await updateAcademicFacultyService(id, req.body);
 
     sendResponse(res, {
         statusCode: 200,
@@ -54,7 +54,7 @@ const updateFaculty = catchAsync( async (req, res) =>{
 
 export {
     createAcademicFaculty,
-    getAllFaculties,
-    getSingleFaculty,
-    updateFaculty
+    getAllAcademicFaculties,
+    getSingleAcademicFaculty,
+    updateAcademicFaculty
 }

@@ -7,12 +7,12 @@ const createAcademicFacultyService = async (PostBody: TAcademicFaculty) => {
   return result;
 };
 
-const getAllFacultiesService = async () => {
+const getAllAcademicFacultiesService = async () => {
   const result = await AcademicFacultyModel.find();
   return result;
 };
 
-const getSingleFacultyService = async (id: string) => {
+const getSingleAcademicFacultyService = async (id: string) => {
   const ObjectId = Types.ObjectId;
   const result = await AcademicFacultyModel.findOne({ _id: new ObjectId(id) });
   return result;
@@ -24,7 +24,7 @@ const getSingleFacultyService = async (id: string) => {
 // }
 
 
-const updateFacultyService = async (id: string, updateData: TAcademicFaculty) => {
+const updateAcademicFacultyService = async (id: string, updateData: TAcademicFaculty) => {
    
    const ObjectId = Types.ObjectId;
   
@@ -41,7 +41,7 @@ const updateFacultyService = async (id: string, updateData: TAcademicFaculty) =>
 
 export {
   createAcademicFacultyService,
-  getAllFacultiesService,
-  getSingleFacultyService,
-  updateFacultyService
+  getAllAcademicFacultiesService,
+  getSingleAcademicFacultyService,
+  updateAcademicFacultyService
 };

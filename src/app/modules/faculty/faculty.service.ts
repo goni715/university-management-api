@@ -3,41 +3,41 @@ import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 import UserModel from '../user/user.model';
 import QueryBuilder from '../../builder/Querybuilder';
-import { AdminModel } from './admin.model';
-import { AdminSearchableFields } from './admin.constant';
-import { TAdmin } from './admin.interface';
+import FacultyModel from './faculty.model';
+import { FacultySearchableFields } from './faculty.constant';
+import { TFaculty } from './faculty.interface';
 
-const getAllAdminsService = async (query: Record<string, unknown>) => {
+const getAllFacultiesService = async (query: Record<string, unknown>) => {
  
   const queryBuilderInstance = new QueryBuilder(
-    AdminModel.find(),
+    FacultyModel.find(),
     query,
   );
-  const adminQuery = queryBuilderInstance
-    .search(AdminSearchableFields)
+  const facultyQuery = queryBuilderInstance
+    .search(FacultySearchableFields)
     .filter()
     .sort()
     .paginate()
     .fields();
 
-  const result = await adminQuery.modelQuery;
+  const result = await facultyQuery.modelQuery;
 
   return result;
 };
 
 
 
-const getSingleAdminService = async (id: string) => {
+const getSingleFacultyService = async (id: string) => {
   const ObjectId = Types.ObjectId;
-  const result = await AdminModel.findOne({ _id: new ObjectId(id) });
+  const result = await FacultyModel.findOne({ _id: new ObjectId(id) });
   return result;
 };
 
 
 
-const updateAdminService = async (
+const updateFacultyService = async (
   id: string,
-  updateData: Partial<TAdmin>,
+  updateData: Partial<TFaculty>,
 ) => {
   const { name, ...remainingAdminData } = updateData;
 
@@ -59,7 +59,7 @@ const updateAdminService = async (
  
 
   const ObjectId = Types.ObjectId;
-  const result = await AdminModel.updateOne(
+  const result = await FacultyModel.updateOne(
     {
       _id: new ObjectId(id),
     },
@@ -70,7 +70,7 @@ const updateAdminService = async (
 
 
 
-const deleteAdminService = async (id: string) => {
+const deleteFacultyService = async (id: string) => {
   const session = await mongoose.startSession();
 
   try {
@@ -79,26 +79,26 @@ const deleteAdminService = async (id: string) => {
     const ObjectId = Types.ObjectId;
 
 
-    const existAdmin = await AdminModel.findOne({ _id: new ObjectId(id) });
-    if (!existAdmin) {
+    const existStudent = await FacultyModel.findOne({ _id: new ObjectId(id) });
+    if (!existStudent) {
       throw new AppError(404, 'This ID does not exist');
     }
 
 
 
-     //delete a admin (transaction-01)
-     const deletedAdmin = await AdminModel.findByIdAndUpdate(
+     //delete a student (transaction-01)
+     const deletedStudent = await FacultyModel.findByIdAndUpdate(
       id,
       { isDeleted: true },
       { new: true, session },
     );
-    if (!deletedAdmin) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failled to delete admin');
+    if (!deletedStudent) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failled to delete student');
     }
 
 
-     // get user _id from deletedAdmin
-     const userId = deletedAdmin.user;
+     // get user _id from deletedStudent
+     const userId = deletedStudent.user;
 
 
     //delete a user (transaction-02)
@@ -116,7 +116,7 @@ const deleteAdminService = async (id: string) => {
     await session.commitTransaction();
     await session.endSession();
 
-    return deletedAdmin;
+    return deletedStudent;
   } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
