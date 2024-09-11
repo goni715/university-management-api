@@ -1,6 +1,6 @@
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { createCourseService, deleteCourseService, getAllCoursesService, getSingleCourseService } from "./course.service";
+import { createCourseService, deleteCourseService, getAllCoursesService, getSingleCourseService, updateCourseService } from "./course.service";
 
 const createCourse = catchAsync(async(req, res)=>{
     const result = await createCourseService(req.body);
@@ -14,7 +14,7 @@ const createCourse = catchAsync(async(req, res)=>{
 
 
 const getAllCourses = catchAsync( async (req, res) => {
-    const result = await getAllCoursesService();
+    const result = await getAllCoursesService(req.query);
     sendResponse(res, {
         statusCode: 200,
         status: true,
@@ -38,17 +38,17 @@ const getSingleCourse = catchAsync(async (req, res) => {
 });
 
 
-// const updateDepartment = catchAsync( async (req, res) =>{
-//     const {id} = req.params;
-//     const result = await updateDepartmentService(id, req.body);
+const updateCourse = catchAsync( async (req, res) =>{
+    const {id} = req.params;
+    const result = await updateCourseService(id, req.body);
 
-//     sendResponse(res, {
-//         statusCode: 200,
-//         status: true,
-//         message: 'Academic Department is updated successfully',
-//         data: result,
-//      })
-// });
+    sendResponse(res, {
+        statusCode: 200,
+        status: true,
+        message: 'Course is updated successfully',
+        data: result,
+     })
+});
 
 const deleteCourse = catchAsync( async (req, res) =>{
     const {id} = req.params;
@@ -68,5 +68,6 @@ export {
     createCourse,
     getAllCourses,
     getSingleCourse,
+    updateCourse,
     deleteCourse
 }
