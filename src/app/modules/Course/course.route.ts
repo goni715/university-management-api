@@ -5,6 +5,7 @@ import {
   updateCourseValidationSchema,
 } from './course.validation';
 import {
+  assignCourseFaculties,
   createCourse,
   deleteCourse,
   getAllCourses,
@@ -26,6 +27,11 @@ router.patch(
   '/update-course/:id',
   validationMiddleware(updateCourseValidationSchema),
   updateCourse
+);
+
+router.put(
+  '/assign-faculties/:courseId',
+  assignCourseFaculties
 );
 
 router.delete('/delete-course/:id', deleteCourse);

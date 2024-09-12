@@ -1,5 +1,5 @@
 import mongoose, { Types } from 'mongoose';
-import { TCourse } from './course.interface';
+import { TCourse, TCourseFaculty } from './course.interface';
 import CourseModel from './course.model';
 import QueryBuilder from '../../builder/Querybuilder';
 import { CourseSearchableFields } from './course.constant';
@@ -117,10 +117,30 @@ const deleteCourseService = async(id: string) => {
 
 
 
+const assignCourseFacultiesService = async(id: string, faculties: Partial<TCourseFaculty>) => {
+  const ObjectId = Types.ObjectId;
+  const result = await CourseModel.updateOne(
+    { _id: new ObjectId(id)},
+    {$addToSet: { faculties: {$each: faculties} }},
+    {upsert:true}
+  )
+
+  //using findByIdAndUpdate
+  // const result = await CourseModel.findByIdAndUpdate(
+  //   id,
+  //   {$addToSet: { faculties: {$each: faculties} }},
+  //   {upsert:true, new:true}
+  // )
+  return result;
+}
+
+
+
 export {
  createCourseService,
  getAllCoursesService,
  getSingleCourseService,
  updateCourseService,
- deleteCourseService
+ deleteCourseService,
+ assignCourseFacultiesService
 };
