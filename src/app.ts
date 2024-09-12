@@ -22,7 +22,7 @@ app.use('/api/v1', router);
 
 //Testing-Route- HomPage
 app.get('/', (req: Request, res: Response)=>{
-    res.send('This is Home Page')
+    res.send('This is university management server')
 })
 
 

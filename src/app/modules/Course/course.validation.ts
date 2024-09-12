@@ -27,3 +27,8 @@ export const updateCourseValidationSchema = z.object({
     preRequisiteCourses: z.array(preRequisiteCoursesValidationSchema).optional(),
     isDeleted: z.boolean().optional()
 })
+
+
+export const facultiesWithCourseValidationSchema = z.object({
+    faculties: z.array(z.string())
+})

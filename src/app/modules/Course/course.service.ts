@@ -1,6 +1,6 @@
 import mongoose, { Types } from 'mongoose';
 import { TCourse, TCourseFaculty } from './course.interface';
-import CourseModel from './course.model';
+import CourseModel, { CourseFacultyModel } from './course.model';
 import QueryBuilder from '../../builder/Querybuilder';
 import { CourseSearchableFields } from './course.constant';
 import AppError from '../../errors/AppError';
@@ -20,7 +20,7 @@ const getAllCoursesService = async (query: Record<string, unknown>) => {
 
 const getSingleCourseService = async (id: string) => {
   const ObjectId = Types.ObjectId;
-  const result = await CourseModel.findOne( { _id: new ObjectId(id)})
+  const result = await CourseModel.findOne( { _id: new ObjectId(id)}).populate('preRequisiteCourses.course')
   return result;
 };
 
@@ -119,20 +119,58 @@ const deleteCourseService = async(id: string) => {
 
 const assignCourseFacultiesService = async(id: string, faculties: Partial<TCourseFaculty>) => {
   const ObjectId = Types.ObjectId;
-  const result = await CourseModel.updateOne(
+
+  //using updateOne()
+  const result = await CourseFacultyModel.updateOne(
     { _id: new ObjectId(id)},
-    {$addToSet: { faculties: {$each: faculties} }},
+    {
+      course: id,
+      $addToSet: { faculties: {$each: faculties} }
+    },
     {upsert:true}
   )
 
-  //using findByIdAndUpdate
-  // const result = await CourseModel.findByIdAndUpdate(
+  //using findByIdAndUpdate()
+  // const result = await CourseFacultyModel.findByIdAndUpdate(
   //   id,
-  //   {$addToSet: { faculties: {$each: faculties} }},
+  //   {
+  //     course: id,
+  //     $addToSet: { faculties: {$each: faculties} }
+  //   },
   //   {upsert:true, new:true}
   // )
   return result;
 }
+
+
+const removeFacultiesFromCourseService = async(id: string, faculties: Partial<TCourseFaculty>) => {
+  const ObjectId = Types.ObjectId;
+
+  //using updateOne()
+  // const result = await CourseFacultyModel.updateOne(
+  //   { _id: new ObjectId(id)},
+  //   {
+  //     $pull: { faculties: {$in: faculties} }
+  //   },
+  //   {upsert:true}
+  // )
+
+  //using findByIdAndUpdate()
+  const result = await CourseFacultyModel.findByIdAndUpdate(
+    id,
+    {
+      $pull: { faculties: {$in: faculties} }
+    },
+    {new:true}
+  )
+  return result;
+}
+
+
+const getAllCourseFacultiesService = async () => {
+  const result = await CourseFacultyModel.find().populate('course');
+  return result;
+};
 
 
 
@@ -142,5 +180,7 @@ export {
  getSingleCourseService,
  updateCourseService,
  deleteCourseService,
- assignCourseFacultiesService
+ assignCourseFacultiesService,
+ removeFacultiesFromCourseService,
+ getAllCourseFacultiesService
 };
