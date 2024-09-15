@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 import { TSemesterRegistration } from "./semesterRegistration.interface";
-import { Status } from "./semesterRegistration.constant";
+import { SemesterRegistrationStatus } from "./semesterRegistration.constant";
 
 
 const semesterRegistrationSchema = new Schema<TSemesterRegistration>({
@@ -13,29 +13,31 @@ const semesterRegistrationSchema = new Schema<TSemesterRegistration>({
     status: {
         type: String,
         enum: {
-          values: Status,
+          values: SemesterRegistrationStatus,
           message: '{VALUE} is not supported',
         },
-        required: true,
+        default: 'UPCOMING',
     },
     startDate: {
         type: Date,
-        required: [true, 'start date is required']
+        required: [true, 'startDate is required']
     },
     endDate: {
         type: Date,
-        required: [true, 'end date is required']
+        required: [true, 'endDate is required']
     },
     minCredit: {
         type: Number,
         trim: true,
-        required: [true, 'min credit is required'] 
+        default: 3
     },
     maxCredit: {
         type: Number,
         trim: true,
-        required: [true, 'max credit is required'] 
+        default: 15
     }
+}, {
+    timestamps: true
 });
 
 

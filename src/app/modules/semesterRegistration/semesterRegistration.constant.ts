@@ -1,3 +1,3 @@
-import { TStatus } from "./semesterRegistration.interface";
+import { TSemesterRegistrationStatus } from "./semesterRegistration.interface";
 
-export const Status : TStatus[] = ['UPCOMING', 'ONGOING', 'ENDED'];
+export const SemesterRegistrationStatus : TSemesterRegistrationStatus[] = ['UPCOMING', 'ONGOING', 'ENDED'];
