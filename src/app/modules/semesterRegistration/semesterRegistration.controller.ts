@@ -1,6 +1,6 @@
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { createSemesterRegistrationService } from "./semesterRegistration.service";
+import { createSemesterRegistrationService, getAllSemesterRegistrationsService, getSingleSemesterRegistrationService } from "./semesterRegistration.service";
 
 
 const createSemesterRegistration = catchAsync(async(req, res, next) => {
@@ -15,6 +15,32 @@ const createSemesterRegistration = catchAsync(async(req, res, next) => {
 
 
 
+const getAllSemesterRegistrations = catchAsync( async (req, res) => {
+    const query = req?.query;
+  
+      const result = await getAllSemesterRegistrationsService(query);
+      res.status(200).json({
+        status: true,
+        message: 'Semester Registrations are retrieved successfully',
+        data: result,
+      });
+  });
+
+
+
+  const getSingleSemesterRegistration = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const result = await getSingleSemesterRegistrationService(id);
+    res.status(200).json({
+      status: true,
+      message: 'Semester Registration is retrieved successfully',
+      data: result,
+    });
+});
+
+
 export {
-    createSemesterRegistration
+    createSemesterRegistration,
+    getAllSemesterRegistrations,
+    getSingleSemesterRegistration
 }

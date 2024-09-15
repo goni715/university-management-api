@@ -3,6 +3,8 @@ import AppError from "../../errors/AppError";
 import AcademicSemesterModel from "../academicSemester/academicSemester.model";
 import { TSemesterRegistration } from "./semesterRegistration.interface";
 import SemesterRegistrationModel from "./semesterRegistration.model";
+import QueryBuilder from "../../builder/Querybuilder";
+import { Types } from "mongoose";
 
 
 const createSemesterRegistrationService = async (payload: TSemesterRegistration) => {
@@ -28,7 +30,32 @@ const createSemesterRegistrationService = async (payload: TSemesterRegistration)
 
 
 
+  const getAllSemesterRegistrationsService = async (query: Record<string, unknown>) => {
+ 
+    const semesterRegistrationQuery = new QueryBuilder(
+      SemesterRegistrationModel.find().populate('academicSemester'),
+      query,
+    ).filter().sort().paginate().fields();
+
+  
+    const result = await semesterRegistrationQuery.modelQuery;
+    return result;
+  };
+
+
+  const getSingleSemesterRegistrationService = async (id: string) => {
+    const ObjectId = Types.ObjectId;
+    const result = await SemesterRegistrationModel.findOne({ _id: new ObjectId(id) }).populate('academicSemester');
+    return result;
+  };
+  
+
+
+
+
 
 export {
-    createSemesterRegistrationService
+    createSemesterRegistrationService,
+    getAllSemesterRegistrationsService,
+    getSingleSemesterRegistrationService
 }
