@@ -35,7 +35,7 @@ const updateDepartmentService = async (id: string, updateData: Partial<TAcademic
       updateData
       );
     return result;
-  };
+};
   
 
 
