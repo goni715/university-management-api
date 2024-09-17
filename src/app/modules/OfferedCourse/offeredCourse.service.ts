@@ -10,7 +10,7 @@ import FacultyModel from "../faculty/faculty.model";
 
 
 const createOfferedCourseService = async (PostBody: TOfferedCourse) => {
-    const {semesterRegistration,academicFaculty, academicDepartment, course, faculty} = PostBody;
+    const {semesterRegistration,academicFaculty, academicDepartment, course, faculty, section} = PostBody;
 
     //check if the semester registration id is exists!
     const isSemesterRegistrationExits = await SemesterRegistrationModel.findById(semesterRegistration);
@@ -62,6 +62,29 @@ const createOfferedCourseService = async (PostBody: TOfferedCourse) => {
          httpStatus.NOT_FOUND,
            'Faculty not found !',
         );
+      }
+
+
+      // check if the academicDepartment is belong to the academicFaculty
+      const isDepartmentToBelongToAcademicFaculty = await AcademicDepartmentModel.findOne({
+        _id: academicDepartment,
+        academicFaculty
+      })
+
+      if(!isDepartmentToBelongToAcademicFaculty){
+        throw new AppError(httpStatus.BAD_REQUEST, `This ${isAcademicDepartmentExits.name} is not belong to the ${isAcademicFacultyExits.name}`)
+      }
+
+
+      // check if the same offeredCourse, same section, in same registered semester exists
+      const isSameOfferedCourseExistWithSameRegisteredSemesterWithSameSection = await OfferedCourseModel.findOne({
+        semesterRegistration,
+        course,
+        section
+      });
+
+      if(isSameOfferedCourseExistWithSameRegisteredSemesterWithSameSection){
+        throw new AppError(httpStatus.BAD_REQUEST, `Offered course with same section is already exist`)
       }
 
 
