@@ -10,7 +10,7 @@ import FacultyModel from "../faculty/faculty.model";
 
 
 const createOfferedCourseService = async (PostBody: TOfferedCourse) => {
-    const {semesterRegistration,academicFaculty, academicDepartment, course, faculty, section} = PostBody;
+    const {semesterRegistration,academicFaculty, academicDepartment, course, faculty, section, days, startTime, endTime} = PostBody;
 
     //check if the semester registration id is exists!
     const isSemesterRegistrationExits = await SemesterRegistrationModel.findById(semesterRegistration);
@@ -86,6 +86,36 @@ const createOfferedCourseService = async (PostBody: TOfferedCourse) => {
       if(isSameOfferedCourseExistWithSameRegisteredSemesterWithSameSection){
         throw new AppError(httpStatus.BAD_REQUEST, `Offered course with same section is already exist`)
       }
+
+
+      //get the schedules of the faculty
+      const assignedSchedules = await OfferedCourseModel.find({
+        semesterRegistration,
+        faculty,
+        days: {$in: days}
+      }).select('days startTime endTime');
+
+      const newSchedule = {
+        days,
+        startTime,
+        endTime
+      }
+
+      console.log(assignedSchedules);
+
+      assignedSchedules.forEach((cv) => {
+        const existingStartTime = new Date(`2024-01-01T${cv.startTime}:00`);
+        const existingEndTime = new Date(`2024-01-01T${cv.endTime}:00`);
+        const newStartTime = new Date(`2024-01-01T${newSchedule.startTime}:00`);
+        const newEndTime = new Date(`2024-01-01T${newSchedule.endTime}:00`);
+
+        //existing=> 10:30 - 12:30
+        //new=> 09:30 - 11:30
+        if( newStartTime < existingEndTime && newEndTime > existingStartTime ){
+          throw new AppError(httpStatus.BAD_REQUEST, `This faculty is not available at that time ! choose other time or day`)
+        }
+      })
+     
 
 
 
