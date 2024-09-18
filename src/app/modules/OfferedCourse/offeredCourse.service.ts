@@ -7,6 +7,7 @@ import AcademicFacultyModel from "../academicFaculty/academicFaculty.model";
 import AcademicDepartmentModel from "../academicDepartment/academicDepartment.model";
 import CourseModel from "../Course/course.model";
 import FacultyModel from "../faculty/faculty.model";
+import { hasTimeConflict } from "./OfferedCourse.utils";
 
 
 const createOfferedCourseService = async (PostBody: TOfferedCourse) => {
@@ -101,20 +102,11 @@ const createOfferedCourseService = async (PostBody: TOfferedCourse) => {
         endTime
       }
 
-      console.log(assignedSchedules);
 
-      assignedSchedules.forEach((cv) => {
-        const existingStartTime = new Date(`2024-01-01T${cv.startTime}:00`);
-        const existingEndTime = new Date(`2024-01-01T${cv.endTime}:00`);
-        const newStartTime = new Date(`2024-01-01T${newSchedule.startTime}:00`);
-        const newEndTime = new Date(`2024-01-01T${newSchedule.endTime}:00`);
-
-        //existing=> 10:30 - 12:30
-        //new=> 09:30 - 11:30
-        if( newStartTime < existingEndTime && newEndTime > existingStartTime ){
-          throw new AppError(httpStatus.BAD_REQUEST, `This faculty is not available at that time ! choose other time or day`)
-        }
-      })
+     const timeConfliction = hasTimeConflict(assignedSchedules, newSchedule); //true or false
+     if(timeConfliction){
+      throw new AppError(httpStatus.CONFLICT, `This faculty is not available at that time ! Choose other day or day`)
+     }
      
 
 
@@ -124,6 +116,7 @@ const createOfferedCourseService = async (PostBody: TOfferedCourse) => {
         academicSemester
     }); 
     return result;
+
 };
 
 
