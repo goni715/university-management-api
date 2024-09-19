@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import userValidationSchema from "./user.validation";
 import { UserServices } from "./user.service";
 import sendResponse from "../../utils/sendResponse";
+import catchAsync from "../../utils/catchAsync";
 
 
 const createStudent = async (req: Request, res: Response, next: NextFunction) => {
@@ -73,9 +73,36 @@ const createStudent = async (req: Request, res: Response, next: NextFunction) =>
   };
 
 
+  const getAllUsers = catchAsync( async (req, res) => {
+    const query = req?.query;
+  
+      const result = await UserServices.getAllUsersService();
+      res.status(200).json({
+        status: true,
+        message: 'Users are retrieved successfully',
+        data: result,
+      });
+  });
+  
+  
+  
+  
+  const getSingleUser = catchAsync(async (req, res) => {
+      const { id } = req.params;
+      const result = await UserServices.getSingleUserService(id);
+      res.status(200).json({
+        status: true,
+        message: 'User is retrieved successfully',
+        data: result,
+      });
+  });
+
+
 
   export {
     createStudent,
     createAdmin,
-    createFaculty
+    createFaculty,
+    getAllUsers,
+    getSingleUser
   }

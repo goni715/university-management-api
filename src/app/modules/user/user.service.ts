@@ -192,9 +192,25 @@ const createFacultyService = async (
 };
 
 
+const getAllUsersService = async () => {
+  const result = await UserModel.find();
+  return result;
+};
+
+
+const getSingleUserService = async (id: string) => {
+  const ObjectId = Types.ObjectId;
+  const result = await UserModel.findOne({ _id: new ObjectId(id) });
+  return result;
+};
+
+
+
 
 export const UserServices = {
   createStudentService,
   createAdminService,
-  createFacultyService
+  createFacultyService,
+  getAllUsersService,
+  getSingleUserService
 };

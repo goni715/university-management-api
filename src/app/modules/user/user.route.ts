@@ -1,5 +1,5 @@
 import express from 'express';
-import { createAdmin, createFaculty, createStudent } from './user.controller';
+import { createAdmin, createFaculty, createStudent, getAllUsers, getSingleUser } from './user.controller';
 import { createStudentValidationSchema } from '../student/student.validation';
 import validationMiddleware from '../../middlewares/validationMiddleware';
 import { createAdminValidationSchema } from '../admin/admin.validation';
@@ -24,6 +24,10 @@ router.post(
   validationMiddleware(createFacultyValidationSchema),
   createFaculty
 );
+
+
+router.get('/get-all-users',getAllUsers);
+router.get('/get-single-user/:id', getSingleUser);
 
 
 
