@@ -9,6 +9,7 @@ import CourseModel from "../Course/course.model";
 import FacultyModel from "../faculty/faculty.model";
 import { hasTimeConflict } from "./OfferedCourse.utils";
 import QueryBuilder from "../../builder/Querybuilder";
+import { Types } from "mongoose";
 
 
 const createOfferedCourseService = async (PostBody: TOfferedCourse) => {
@@ -136,6 +137,13 @@ const getAllOfferedCoursesService = async (query: Record<string, unknown>) => {
 };
 
 
+const getSingleOfferedCourseService = async (id: string) => {
+  const ObjectId = Types.ObjectId;
+  const result = await OfferedCourseModel.findOne({ _id: new ObjectId(id) });
+  return result;
+};
+
+
 
 const updateOfferdCourseService = async (id: string, updateData: Pick<TOfferedCourse, 'faculty'| 'days' | 'startTime' | 'endTime'>) => {
 
@@ -211,5 +219,6 @@ const {faculty, days, startTime, endTime} = updateData;
 export {
     createOfferedCourseService,
     getAllOfferedCoursesService,
+    getSingleOfferedCourseService,
     updateOfferdCourseService
 }
