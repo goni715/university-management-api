@@ -2,7 +2,7 @@ import { model, Schema } from 'mongoose';
 import { TUser } from './user.interface';
 import bcrypt from 'bcryptjs';
 import config from '../../config';
-import validator from 'validator';
+import validator, { isTime } from 'validator';
 
 const userSchema = new Schema<TUser>(
   {
@@ -74,7 +74,6 @@ userSchema.post('save', function (doc, next) {
   doc.password = '';
   next();
 });
-
 
 
 
