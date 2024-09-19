@@ -1,6 +1,6 @@
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { createSemesterRegistrationService, getAllSemesterRegistrationsService, getSingleSemesterRegistrationService, updateSemesterRegistrationService } from "./semesterRegistration.service";
+import { createSemesterRegistrationService, deleteSemesterRegistrationService, getAllSemesterRegistrationsService, getSingleSemesterRegistrationService, updateSemesterRegistrationService } from "./semesterRegistration.service";
 
 
 const createSemesterRegistration = catchAsync(async(req, res, next) => {
@@ -52,9 +52,24 @@ const updateSemesterRegistration = catchAsync( async (req, res) =>{
 });
 
 
+
+const deleteSemesterRegistration = catchAsync( async (req, res) =>{
+  const {id} = req.params;
+  const result = await deleteSemesterRegistrationService(id);
+
+  sendResponse(res, {
+      statusCode: 200,
+      status: true,
+      message: 'Semester Registration is deleted successfully',
+      data: result,
+   })
+});
+
+
 export {
     createSemesterRegistration,
     getAllSemesterRegistrations,
     getSingleSemesterRegistration,
     updateSemesterRegistration,
+    deleteSemesterRegistration
 }

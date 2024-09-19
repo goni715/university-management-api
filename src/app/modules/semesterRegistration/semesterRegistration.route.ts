@@ -1,5 +1,5 @@
 import express from 'express';
-import { createSemesterRegistration, getAllSemesterRegistrations, getSingleSemesterRegistration, updateSemesterRegistration } from './semesterRegistration.controller';
+import { createSemesterRegistration, deleteSemesterRegistration, getAllSemesterRegistrations, getSingleSemesterRegistration, updateSemesterRegistration } from './semesterRegistration.controller';
 import validationMiddleware from '../../middlewares/validationMiddleware';
 import { createSemesterRegistrationValidationSchema, updateSemesterRegistrationValidationSchema } from './semesterRegistration.validation';
 
@@ -11,7 +11,7 @@ router.post('/create-semester-registration', validationMiddleware(createSemester
 router.get('/get-all-semester-registrations', getAllSemesterRegistrations);
 router.get('/get-single-semester-registration/:id', getSingleSemesterRegistration);
 router.patch('/update-semester-registration/:id', validationMiddleware(updateSemesterRegistrationValidationSchema), updateSemesterRegistration);
-
+router.delete('/delete-semester-registration/:id', deleteSemesterRegistration);
 
 
 
