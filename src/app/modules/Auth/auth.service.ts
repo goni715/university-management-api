@@ -3,6 +3,8 @@ import AppError from "../../errors/AppError";
 import UserModel from "../user/user.model"
 import { TLoginUser } from "./auth.interface"
 import { checkPassword } from "./auth.utils";
+import jwt from 'jsonwebtoken';
+import config from "../../config";
 
 
 const loginUserService = async (payload: TLoginUser) => {
@@ -36,7 +38,24 @@ const loginUserService = async (payload: TLoginUser) => {
           throw new AppError(httpStatus.FORBIDDEN, `Wrong Password`);
       }
 
-    return payload
+
+    //create token
+
+
+    const jwtPayload = {
+        userId: isUserExists.id,
+        role: isUserExists.role
+    }
+
+
+    const accessToken = jwt.sign(jwtPayload, config.jwt_secret as string, { expiresIn: '10d' });
+      
+
+
+    return {
+        accessToken,
+        needsPasswordChange: isUserExists.needsPasswordChange
+    }
 }
 
 
