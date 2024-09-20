@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { AnyZodObject } from "zod";
+import { AnyZodObject, ZodEffects, ZodObject } from "zod";
 
-const validationMiddleware = (schema: AnyZodObject)=>{
+//const validationMiddleware = (schema: AnyZodObject)=>{}
+
+const validationMiddleware = (schema: ZodObject<any> | ZodEffects<any>)=>{
     return async (req:Request, res:Response, next: NextFunction)=>{
         try{
             //validation check
