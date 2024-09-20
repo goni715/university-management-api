@@ -2,7 +2,7 @@ import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 import UserModel from "../user/user.model"
 import { TLoginUser } from "./auth.interface"
-import bcrypt from 'bcryptjs';
+import { checkPassword } from "./auth.utils";
 
 
 const loginUserService = async (payload: TLoginUser) => {
@@ -31,7 +31,7 @@ const loginUserService = async (payload: TLoginUser) => {
       }
 
       //checking if the password is not correct
-      const isPasswordMatched = await bcrypt.compare(password, isUserExists?.password); //return true or false
+      const isPasswordMatched = await checkPassword(password, isUserExists?.password) //return true or false
       if(!isPasswordMatched){
           throw new AppError(httpStatus.FORBIDDEN, `Wrong Password`);
       }
