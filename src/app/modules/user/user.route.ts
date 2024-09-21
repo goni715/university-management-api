@@ -34,7 +34,7 @@ router.post(
   createFaculty,
 );
 
-router.get('/get-all-users', authMiddleware(), getAllUsers);
+router.get('/get-all-users', authMiddleware(UserRole.admin), getAllUsers);
 router.get('/get-single-user/:id', getSingleUser);
 
 export const UserRoutes = router;

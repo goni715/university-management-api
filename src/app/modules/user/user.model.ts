@@ -27,6 +27,7 @@ const userSchema = new Schema<TUser>(
       required: [true, 'Password must be required'],
       minlength: [6, `Password must be minimum 6 characters`],
       maxlength: [20, `Password can't be more than 20 characters`],
+      select:0
     },
     needsPasswordChange: {
       type: Boolean,
