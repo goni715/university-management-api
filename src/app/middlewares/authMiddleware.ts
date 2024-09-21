@@ -12,7 +12,7 @@ const authMiddleware = (...requiredRoles : TUserRole[]) => {
     const token = req.headers.authorization;
 
        if(!token){
-          throw new AppError(httpStatus.UNAUTHORIZED, `You are not unauthorized toekn !`)
+          throw new AppError(httpStatus.UNAUTHORIZED, `You are not unauthorized !`)
        }
     
 
@@ -27,7 +27,7 @@ const authMiddleware = (...requiredRoles : TUserRole[]) => {
          if (requiredRoles && !requiredRoles.includes(role)) {
             throw new AppError(
               httpStatus.UNAUTHORIZED,
-              'You are not authorized  hi!',
+              'You are not authorized !',
             );
           }
 

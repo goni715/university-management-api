@@ -33,6 +33,9 @@ const userSchema = new Schema<TUser>(
       type: Boolean,
       default: true,
     },
+    passwordChangedAt: {
+      type: Date,
+    },
     role: {
       type: String,
       enum: {

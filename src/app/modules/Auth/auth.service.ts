@@ -2,7 +2,7 @@ import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 import UserModel from "../user/user.model"
 import { TChangePassword, TLoginUser } from "./auth.interface"
-import { checkPassword } from "./auth.utils";
+import { checkPassword, hashedPassword } from "./auth.utils";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from "../../config";
 
@@ -40,27 +40,52 @@ const loginUserService = async (payload: TLoginUser) => {
 
 
     //create token
-
-
     const jwtPayload = {
         userId: isUserExists.id,
         role: isUserExists.role
     }
 
-
     const accessToken = jwt.sign(jwtPayload, config.jwt_secret as string, { expiresIn: '10d' });
       
-
-
     return {
         accessToken,
         needsPasswordChange: isUserExists.needsPasswordChange
     }
 }
 
-const changePasswordService = async (user: JwtPayload, payload: TChangePassword )=>{
+
+
+
+const changePasswordService = async (userData: JwtPayload, payload: TChangePassword )=>{
+    const {userId, role} = userData;
     const {oldPassword, newPassword} = payload;
-    return null;
+   
+     //check if the user is exist
+     const user = await UserModel.findOne({ id: userId }).select('+password');
+    
+    //checking if the password is not correct
+    const isPasswordMatched = await checkPassword(oldPassword, user?.password as string) //return true or false
+    if(!isPasswordMatched){
+        throw new AppError(httpStatus.FORBIDDEN, `Password do not match`);
+    }
+
+    //hash the newPassword
+    const hashPass = await hashedPassword(newPassword);
+    
+    const result = await UserModel.updateOne(
+        {
+            id: userId,
+            role: role
+        },
+        {
+            password: hashPass,
+            needsPasswordChange: false,
+            passwordChangedAt: new Date()
+        }
+    )
+
+
+    return result;
 }
 
 
