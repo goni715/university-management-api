@@ -1,3 +1,5 @@
+import { UserRole } from "./user.constant";
+
 export type TUser = {
     id: string;
     password: string;
@@ -14,3 +16,5 @@ export type NewUser = {
     role: string;
     id: string;
 }
+
+export type TUserRole = keyof typeof UserRole;

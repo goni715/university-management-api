@@ -3,9 +3,12 @@ import AppError from "../errors/AppError";
 import httpStatus from "http-status";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from "../config";
+import { TUserRole } from "../modules/user/user.interface";
 
 
-const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const authMiddleware = (...requiredRoles : TUserRole[]) => {
+   return (req: Request, res: Response, next: NextFunction) => {
+
     const token = req.headers.authorization;
 
        if(!token){
@@ -19,6 +22,15 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
             throw new AppError(httpStatus.UNAUTHORIZED, `You are not unauthorized !`)
          }
 
+         const {role} = decoded as JwtPayload;
+
+         if (requiredRoles && !requiredRoles.includes(role)) {
+            throw new AppError(
+              httpStatus.UNAUTHORIZED,
+              'You are not authorized  hi!',
+            );
+          }
+
          req.user=decoded as JwtPayload;
 
       //  const data = decoded as JwtPayload;
@@ -27,6 +39,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
       });
 }
 
+}
 
 
 export default authMiddleware;
