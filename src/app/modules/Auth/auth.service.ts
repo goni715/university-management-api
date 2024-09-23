@@ -154,4 +154,46 @@ const refreshTokenService = async(token: string) => {
 
 
 
-export { loginUserService, changePasswordService, refreshTokenService };
+const forgetPasswordService = async (userId:string) => {
+  //check if the user is exist
+  const user = await UserModel.findOne({ id: userId });
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, `This user is not found`);
+  }
+
+  //check if the user is already deleted
+  const isDeleted = user?.isDeleted;
+  console.log(isDeleted);
+  if (isDeleted) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      `This user is already deleted`,
+    );
+  }
+
+  //check if the user is already blocked
+  const blockStatus = user?.status;
+  if (blockStatus === 'blocked') {
+    throw new AppError(httpStatus.FORBIDDEN, `This user is blocked`);
+  }
+
+   //create token
+   const jwtPayload = {
+      userId: user.id,
+      role: user.role,
+    };
+  const token = createToken(jwtPayload, config.jwt_access_secret as string, '10m');
+
+  const resetLink = `http://localhost:5173?id=${user.id}&token=${token}`
+
+
+  return {
+    resetLink
+  };
+
+}
+
+
+
+
+export { loginUserService, changePasswordService, refreshTokenService, forgetPasswordService };

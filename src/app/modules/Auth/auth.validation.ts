@@ -25,3 +25,11 @@ export const refreshTokenValidationSchema = z.object({
         required_error: 'Refresh token is required !'
     })
 })
+
+
+
+export const forgetPasswordValidationSchema = z.object({
+    id: z.string({
+        required_error: 'userId is required !'
+    })
+})

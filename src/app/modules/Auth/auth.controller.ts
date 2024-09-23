@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
-import { changePasswordService, loginUserService, refreshTokenService } from './auth.service';
+import { changePasswordService, forgetPasswordService, loginUserService, refreshTokenService } from './auth.service';
 import config from '../../config';
 
 const loginUser = catchAsync(async (req, res) => {
@@ -59,4 +59,18 @@ const refreshToken = catchAsync(async (req, res) => {
 
 
 
-export { loginUser, changePassword, refreshToken };
+const forgetPassword = catchAsync(async (req, res) => {
+  const { id } = req.body;
+
+  const result = await forgetPasswordService(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    status: true,
+    message: 'Reset link is sent successfully !',
+    data: result
+  });
+});
+
+
+
+export { loginUser, changePassword, refreshToken, forgetPassword };
