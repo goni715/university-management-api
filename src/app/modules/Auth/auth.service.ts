@@ -42,10 +42,13 @@ const loginUserService = async (payload: TLoginUser) => {
     role: isUserExists.role,
   };
 
-  const accessToken = createToken(jwtPayload, config.)
+  const accessToken = createToken(jwtPayload, config.jwt_access_secret as string, config.jwt_access_expires_in as string)
+  const refreshToken = createToken(jwtPayload, config.jwt_refresh_secret as string, config.jwt_refresh_expires_in as string);
+
 
   return {
     accessToken,
+    refreshToken,
     needsPasswordChange: isUserExists.needsPasswordChange,
   };
 };
