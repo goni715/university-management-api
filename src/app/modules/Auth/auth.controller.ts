@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
-import { changePasswordService, loginUserService } from './auth.service';
+import { changePasswordService, loginUserService, refreshTokenService } from './auth.service';
 import config from '../../config';
 
 const loginUser = catchAsync(async (req, res) => {
@@ -41,4 +41,22 @@ const changePassword = catchAsync(async (req, res) => {
   });
 });
 
-export { loginUser, changePassword };
+
+
+
+const refreshToken = catchAsync(async (req, res) => {
+  const { refreshToken } = req.cookies;
+  
+  const result = await refreshTokenService(refreshToken);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    status: true,
+    message: 'Access token is retrieved successfully !',
+    data: result
+  });
+});
+
+
+
+
+export { loginUser, changePassword, refreshToken };

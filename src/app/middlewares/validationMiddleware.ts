@@ -6,10 +6,13 @@ import { AnyZodObject, ZodEffects, ZodObject } from "zod";
 const validationMiddleware = (schema: ZodObject<any> | ZodEffects<any>)=>{
     return async (req:Request, res:Response, next: NextFunction)=>{
         try{
+
             //validation check
             //if evertything allright next()--->
-            const result = await schema.parseAsync(req.body);
-            // console.log(result);
+            await schema.parseAsync({...req.body, ...req.cookies});
+            //await schema.parseAsync(req.body);
+
+           
             next();
         }
         catch(err){

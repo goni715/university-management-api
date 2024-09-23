@@ -2,7 +2,7 @@ import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import UserModel from '../user/user.model';
 import { TChangePassword, TLoginUser } from './auth.interface';
-import { checkPassword, createToken, hashedPassword } from './auth.utils';
+import { checkPassword, createToken, hashedPassword, isJWTIssuedBeforePasswordChanged } from './auth.utils';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 
@@ -93,4 +93,65 @@ const changePasswordService = async (
   return result;
 };
 
-export { loginUserService, changePasswordService };
+
+
+const refreshTokenService = async(token: string) => {
+  if (!token) {
+    throw new AppError(httpStatus.UNAUTHORIZED, `You are not unauthorized !`);
+  }
+
+  //verify-token
+   const decoded = jwt.verify(
+      token,
+      config.jwt_refresh_secret as string,
+    ) as JwtPayload;
+
+    const { role, userId, iat } = decoded as JwtPayload;
+
+    //check if the user is exist
+    const user = await UserModel.findOne({ id: userId });
+    if (!user) {
+      throw new AppError(httpStatus.NOT_FOUND, `This user is not found`);
+    }
+
+    //check if the user is already deleted
+    const isDeleted = user?.isDeleted;
+    if (isDeleted) {
+      throw new AppError(
+        httpStatus.FORBIDDEN,
+        `This user is already deleted`,
+      );
+    }
+
+    //check if the user is already blocked
+    const blockStatus = user?.status;
+    if (blockStatus === 'blocked') {
+      throw new AppError(httpStatus.FORBIDDEN, `This user is blocked`);
+    }
+
+    //check if passwordChangedAt is greater than token iat
+    if (
+      user?.passwordChangedAt &&
+      isJWTIssuedBeforePasswordChanged(user?.passwordChangedAt, iat as number)
+    ) {
+      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
+    }
+
+  //create new access token
+  const jwtPayload = {
+    userId: user.id,
+    role: user.role,
+  };
+
+  const accessToken = createToken(jwtPayload, config.jwt_access_secret as string, config.jwt_access_expires_in as string);
+
+  return {
+    accessToken
+  }
+  
+}
+
+
+
+
+export { loginUserService, changePasswordService, refreshTokenService };

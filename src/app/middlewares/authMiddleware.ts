@@ -18,7 +18,7 @@ const authMiddleware = (...requiredRoles: TUserRole[]) => {
     try {
       const decoded = jwt.verify(
         token,
-        config.jwt_secret as string,
+        config.jwt_access_secret as string,
       ) as JwtPayload;
 
       const { role, userId, iat } = decoded as JwtPayload;
@@ -44,17 +44,18 @@ const authMiddleware = (...requiredRoles: TUserRole[]) => {
         throw new AppError(httpStatus.FORBIDDEN, `This user is blocked`);
       }
 
-
-      //check if passwordChangedAt is greater than token iat 
-      if(user?.passwordChangedAt && isJWTIssuedBeforePasswordChanged(user?.passwordChangedAt, iat as number)){
-         throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !'); 
+      //check if passwordChangedAt is greater than token iat
+      if (
+        user?.passwordChangedAt &&
+        isJWTIssuedBeforePasswordChanged(user?.passwordChangedAt, iat as number)
+      ) {
+        throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
       }
-
 
       if (requiredRoles && !requiredRoles.includes(role)) {
         throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
       }
-      
+
       req.user = decoded;
       next();
     } catch (err: unknown) {

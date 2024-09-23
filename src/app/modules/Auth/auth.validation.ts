@@ -17,4 +17,11 @@ export const changePasswordValidationSchema = z.object({
     newPassword: z.string({
         required_error: 'newPassword is required !'
     }).min(6, 'New Password must be minimum 6 characters'),
+});
+
+
+export const refreshTokenValidationSchema = z.object({
+    refreshToken: z.string({
+        required_error: 'Refresh token is required !'
+    })
 })

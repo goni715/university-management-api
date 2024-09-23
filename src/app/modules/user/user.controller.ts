@@ -74,9 +74,7 @@ const createStudent = async (req: Request, res: Response, next: NextFunction) =>
 
 
   const getAllUsers = catchAsync( async (req, res) => {
-    const query = req?.query;
-    console.log(req.user);
-  
+     
       const result = await UserServices.getAllUsersService();
       res.status(200).json({
         status: true,
