@@ -2,7 +2,7 @@ import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import UserModel from '../user/user.model';
 import { TChangePassword, TLoginUser } from './auth.interface';
-import { checkPassword, hashedPassword } from './auth.utils';
+import { checkPassword, createToken, hashedPassword } from './auth.utils';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 
@@ -42,9 +42,7 @@ const loginUserService = async (payload: TLoginUser) => {
     role: isUserExists.role,
   };
 
-  const accessToken = jwt.sign(jwtPayload, config.jwt_secret as string, {
-    expiresIn: '10d',
-  });
+  const accessToken = createToken(jwtPayload, config.)
 
   return {
     accessToken,

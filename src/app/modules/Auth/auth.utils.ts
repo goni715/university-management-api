@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import config from '../../config';
+import jwt from 'jsonwebtoken';
 
 
 export const checkPassword = async (plainTextPass: string, hashPassword: string) => {
@@ -15,4 +16,13 @@ export const hashedPassword = async (password: string) => {
 export const isJWTIssuedBeforePasswordChanged = (passwordChangedTimestamp: Date, jwtIssuedTimestamp : number) => {
    const passwordChangedTime = new Date(passwordChangedTimestamp).getTime() / 1000; //seconds 
    return passwordChangedTime > jwtIssuedTimestamp;
+}
+
+
+export const createToken = (jwtPayload : {userId:string, role: string}, secretKey:string, expiresIn:string) => {
+   const token = jwt.sign(jwtPayload, secretKey, {
+      expiresIn: expiresIn,
+    });
+
+    return token;
 }
