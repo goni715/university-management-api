@@ -5,6 +5,7 @@ import { TChangePassword, TLoginUser } from './auth.interface';
 import { checkPassword, createToken, hashedPassword, isJWTIssuedBeforePasswordChanged } from './auth.utils';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
+import sendEmail from '../../utils/sendEmail';
 
 const loginUserService = async (payload: TLoginUser) => {
   const { id, password } = payload || {};
@@ -184,7 +185,11 @@ const forgetPasswordService = async (userId:string) => {
     };
   const token = createToken(jwtPayload, config.jwt_access_secret as string, '10m');
 
-  const resetLink = `http://localhost:5173?id=${user.id}&token=${token}`
+  const resetLink = `${config.reset_password_ui_link}?id=${user.id}&token=${token}`;
+
+  await sendEmail('goniosman715149123@gmail.com', resetLink)
+
+
 
 
   return {
