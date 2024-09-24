@@ -1,7 +1,7 @@
 import express from 'express';
-import { changePassword, forgetPassword, loginUser, refreshToken } from './auth.controller';
+import { changePassword, forgetPassword, loginUser, refreshToken, resetPassword } from './auth.controller';
 import validationMiddleware from './../../middlewares/validationMiddleware';
-import { changePasswordValidationSchema, forgetPasswordValidationSchema, loginUserValidationSchema, refreshTokenValidationSchema } from './auth.validation';
+import { changePasswordValidationSchema, forgetPasswordValidationSchema, loginUserValidationSchema, refreshTokenValidationSchema, resetPasswordValidationSchema } from './auth.validation';
 import authMiddleware from '../../middlewares/authMiddleware';
 import { UserRole } from '../user/user.constant';
 
@@ -16,6 +16,7 @@ router.patch('/change-password', authMiddleware(UserRole.admin, UserRole.student
 
 router.post('/refresh-token', validationMiddleware(refreshTokenValidationSchema), refreshToken);
 router.post('/forget-password', validationMiddleware(forgetPasswordValidationSchema), forgetPassword);
+router.patch('/reset-password', validationMiddleware(resetPasswordValidationSchema), resetPassword);
 
 
 

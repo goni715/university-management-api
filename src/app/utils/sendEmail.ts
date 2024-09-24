@@ -17,7 +17,7 @@ const sendEmail = async(emailTo: string, resetLink:string) => {
   const info = await transporter.sendMail({
     from: `University Management ${config.smtp_from}`, //sender email address//smtp-username
     to: emailTo, // list of receivers
-    subject: "Reset Your Password", // Subject line
+    subject: "Reset Your Password within 10 minutes", // Subject line
     text: resetLink, // plain text body
     //html: ``, // html body
   });

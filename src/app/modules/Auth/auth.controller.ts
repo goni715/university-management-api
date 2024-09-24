@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
-import { changePasswordService, forgetPasswordService, loginUserService, refreshTokenService } from './auth.service';
+import { changePasswordService, forgetPasswordService, loginUserService, refreshTokenService, resetPasswordService } from './auth.service';
 import config from '../../config';
 
 const loginUser = catchAsync(async (req, res) => {
@@ -73,4 +73,18 @@ const forgetPassword = catchAsync(async (req, res) => {
 
 
 
-export { loginUser, changePassword, refreshToken, forgetPassword };
+
+const resetPassword = catchAsync(async (req, res) => {
+ 
+  const result = await resetPasswordService(req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    status: true,
+    message: 'Password reset successfull !',
+    data: result
+  });
+});
+
+
+
+export { loginUser, changePassword, refreshToken, forgetPassword, resetPassword };
