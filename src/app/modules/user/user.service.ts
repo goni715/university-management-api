@@ -13,9 +13,11 @@ import { AdminModel } from '../admin/admin.model';
 import { TFaculty } from '../faculty/faculty.interface';
 import AcademicDepartmentModel from '../academicDepartment/academicDepartment.model';
 import FacultyModel from '../faculty/faculty.model';
+import uploadImageToCloudinary from '../../utils/uploadImageToCloudinary';
 
 
 const createStudentService = async (
+  file: any,
   password: string,
   studentData: TStudent,
 ) => {
@@ -46,6 +48,9 @@ const createStudentService = async (
       admissionSemester as TAcademicSemester & { _id: Types.ObjectId },
     );
 
+    //upload image to cloudinary
+    const cloudinaryRes = await uploadImageToCloudinary(file?.path);
+
     //create a user (transaction-01)
     const newUser = await UserModel.create([userData], { session }); //built-in static method
     if (!newUser.length) {
@@ -55,6 +60,7 @@ const createStudentService = async (
     // set id, _id as user
     studentData.id = newUser[0].id;
     studentData.user = newUser[0]._id;
+    studentData.profileImg = cloudinaryRes?.secure_url;
 
     //create a student (transaction-02)
     const newStudent = await StudentModel.create([studentData], { session });
@@ -77,6 +83,7 @@ const createStudentService = async (
 
 
 const createAdminService = async (
+  file: any,
   password: string,
   adminData: TAdmin,
 ) => {
@@ -99,6 +106,9 @@ const createAdminService = async (
     //set manually generated id
     userData.id = await generateAdminId();
 
+    //upload image to cloudinary
+    const cloudinaryRes = await uploadImageToCloudinary(file?.path);
+
     //create a user (transaction-01)
     const newUser = await UserModel.create([userData], { session }); //built-in static method
     if (!newUser.length) {
@@ -108,6 +118,7 @@ const createAdminService = async (
     //set id, _id as user
     adminData.id = newUser[0].id;
     adminData.user = newUser[0]._id;
+    adminData.profileImg = cloudinaryRes?.secure_url;
 
     //create a admin (transaction-02)
     const newAdmin = await AdminModel.create([adminData], { session });
@@ -128,6 +139,7 @@ const createAdminService = async (
 };
 
 const createFacultyService = async (
+  file: any,
   password: string,
   facultyData: TFaculty,
 ) => {
@@ -163,6 +175,9 @@ const createFacultyService = async (
     //set manually generated id
     userData.id = await generateFacultyId();
 
+     //upload image to cloudinary
+     const cloudinaryRes = await uploadImageToCloudinary(file?.path);
+
     //create a user (transaction-01)
     const newUser = await UserModel.create([userData], { session }); //built-in static method
     if (!newUser.length) {
@@ -172,6 +187,7 @@ const createFacultyService = async (
     //set id, _id as user
     facultyData.id = newUser[0].id;
     facultyData.user = newUser[0]._id;
+    facultyData.profileImg = cloudinaryRes?.secure_url;
 
     //create a admin (transaction-02)
     const newFaculty = await FacultyModel.create([facultyData], { session });

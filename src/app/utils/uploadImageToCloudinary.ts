@@ -1,16 +1,19 @@
 import cloudinary from "../helper/cloudinary";
+import fs from 'fs';
 
 
 
-const uploadImageToCloudinary = async () => {
+const uploadImageToCloudinary = async (path: string) => {
     
      // Upload an image
      const uploadResult = await cloudinary.uploader
        .upload(
-           'https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg', {
-               folder: "university"
-           }
+            path,{ 
+             folder: "university"
+            }
        )
+
+       fs.unlinkSync(path);
 
     return uploadResult;
 

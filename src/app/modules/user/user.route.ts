@@ -34,12 +34,23 @@ router.post(
 
 router.post(
   '/create-admin',
+  upload.single('image'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next()
+  },
   validationMiddleware(createAdminValidationSchema),
   createAdmin,
 );
 
 router.post(
   '/create-faculty',
+  authMiddleware('admin'),
+  upload.single('image'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next()
+  },
   validationMiddleware(createFacultyValidationSchema),
   createFaculty,
 );

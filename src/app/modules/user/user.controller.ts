@@ -9,7 +9,7 @@ const createStudent = async (req: Request, res: Response, next: NextFunction) =>
     try {
         const {password, studentData} = req.body;
      
-       const result = await UserServices.createStudentService(password, studentData);
+       const result = await UserServices.createStudentService(req.file, password, studentData);
   
       // res.status(201).json({
       //   status: true,
@@ -34,10 +34,9 @@ const createStudent = async (req: Request, res: Response, next: NextFunction) =>
 
   const createAdmin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-
         const {password, adminData} = req.body;
      
-       const result = await UserServices.createAdminService(password, adminData);
+       const result = await UserServices.createAdminService(req?.file, password, adminData);
 
       sendResponse(res, {
          statusCode: 201,
@@ -58,7 +57,7 @@ const createStudent = async (req: Request, res: Response, next: NextFunction) =>
 
         const {password, facultyData} = req.body;
      
-       const result = await UserServices.createFacultyService(password, facultyData);
+       const result = await UserServices.createFacultyService(req?.file, password, facultyData);
 
       sendResponse(res, {
          statusCode: 201,
@@ -123,7 +122,7 @@ const changeStatus = catchAsync(async (req, res) => {
 
 
 const uploadImage = catchAsync(async (req, res) => {
-  const result = await uploadImageToCloudinary();
+  const result = await uploadImageToCloudinary(req?.file?.path as string);
   res.status(200).json({
     status: true,
     message: 'Image Uploaded successfully',
