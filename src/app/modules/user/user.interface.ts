@@ -1,5 +1,8 @@
 import { UserRole } from "./user.constant";
 
+export type TUserStatus = 'in-progress' | 'blocked';
+
+
 export type TUser = {
     id: string;
     password: string;
@@ -7,7 +10,7 @@ export type TUser = {
     needsPasswordChange: boolean;
     passwordChangedAt?: Date;
     role: 'superAdmin' | 'student' | 'admin' | 'faculty';
-    status: 'in-progress' | 'blocked';
+    status: TUserStatus;
     isDeleted: boolean;
 }
 

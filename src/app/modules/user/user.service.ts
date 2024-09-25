@@ -225,11 +225,23 @@ const getMeService = async (id: string, role: string) => {
 };
 
 
+const changeStatusService = async (id: string, payload: { status: string }) => {
+  const ObjectId = Types.ObjectId;
+   const result = await UserModel.updateOne(
+    {_id: new ObjectId(id)},
+    payload
+   );
+
+   return result;
+}
+
+
 export const UserServices = {
   createStudentService,
   createAdminService,
   createFacultyService,
   getAllUsersService,
   getSingleUserService,
-  getMeService
+  getMeService,
+  changeStatusService
 };

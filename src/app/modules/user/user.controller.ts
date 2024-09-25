@@ -104,10 +104,21 @@ const getMe = catchAsync(async (req, res) => {
     res.status(200).json({
       status: true,
       message: 'User is retrieved successfully',
-      data: result,
+      data: result
     });
 });
 
+
+
+const changeStatus = catchAsync(async (req, res) => {
+  const {id} = req.params;
+  const result = await UserServices.changeStatusService(id, req.body);
+  res.status(200).json({
+    status: true,
+    message: 'Status is updated successfully',
+    data: result
+  });
+});
 
 
   export {
@@ -116,5 +127,6 @@ const getMe = catchAsync(async (req, res) => {
     createFaculty,
     getAllUsers,
     getSingleUser,
-    getMe
+    getMe,
+    changeStatus
   }

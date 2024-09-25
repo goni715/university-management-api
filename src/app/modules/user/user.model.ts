@@ -3,6 +3,7 @@ import { TUser } from './user.interface';
 import bcrypt from 'bcryptjs';
 import config from '../../config';
 import validator, { isTime } from 'validator';
+import { UserStatus } from './user.constant';
 
 const userSchema = new Schema<TUser>(
   {
@@ -45,7 +46,7 @@ const userSchema = new Schema<TUser>(
     },
     status: {
       type: String,
-      enum: ['in-progress', 'blocked'],
+      enum: UserStatus,
       default: 'in-progress',
     },
     isDeleted: {
