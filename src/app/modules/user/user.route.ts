@@ -4,6 +4,7 @@ import {
   createFaculty,
   createStudent,
   getAllUsers,
+  getMe,
   getSingleUser,
 } from './user.controller';
 import { createStudentValidationSchema } from '../student/student.validation';
@@ -36,5 +37,7 @@ router.post(
 
 router.get('/get-all-users', authMiddleware(UserRole.admin), getAllUsers);
 router.get('/get-single-user/:id', getSingleUser);
+router.get('/get-me', authMiddleware('student', 'faculty', 'admin'), getMe);
+
 
 export const UserRoutes = router;

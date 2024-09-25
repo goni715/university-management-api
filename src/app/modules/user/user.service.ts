@@ -205,6 +205,24 @@ const getSingleUserService = async (id: string) => {
 };
 
 
+const getMeService = async (id: string, role: string) => {
+
+  let result = null;
+
+  if(role === "student"){
+    result = await StudentModel.findOne({ id }).populate('user');
+  }
+  
+  if(role === "faculty"){
+    result = await FacultyModel.findOne({ id }).populate('user');
+  }
+
+  if(role === "admin"){
+    result = await AdminModel.findOne({ id }).populate('user');
+  }
+
+  return result;
+};
 
 
 export const UserServices = {
@@ -212,5 +230,6 @@ export const UserServices = {
   createAdminService,
   createFacultyService,
   getAllUsersService,
-  getSingleUserService
+  getSingleUserService,
+  getMeService
 };

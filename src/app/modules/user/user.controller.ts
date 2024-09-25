@@ -97,11 +97,24 @@ const createStudent = async (req: Request, res: Response, next: NextFunction) =>
   });
 
 
+  
+const getMe = catchAsync(async (req, res) => {
+    const { userId, role } = req.user;
+    const result = await UserServices.getMeService(userId, role);
+    res.status(200).json({
+      status: true,
+      message: 'User is retrieved successfully',
+      data: result,
+    });
+});
+
+
 
   export {
     createStudent,
     createAdmin,
     createFaculty,
     getAllUsers,
-    getSingleUser
+    getSingleUser,
+    getMe
   }

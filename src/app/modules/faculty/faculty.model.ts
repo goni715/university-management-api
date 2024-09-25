@@ -32,7 +32,7 @@ const facultySchema = new Schema<TFaculty>(
       type: Schema.Types.ObjectId,
       required: [true, 'User id is required'],
       unique: true,
-      ref: 'User',
+      ref: 'users',
     },
     designation: {
       type: String,
