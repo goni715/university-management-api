@@ -7,6 +7,7 @@ import {
   getAllUsers,
   getMe,
   getSingleUser,
+  uploadImage,
 } from './user.controller';
 import { createStudentValidationSchema } from '../student/student.validation';
 import validationMiddleware from '../../middlewares/validationMiddleware';
@@ -15,6 +16,7 @@ import { createFacultyValidationSchema } from '../faculty/faculty.validation';
 import authMiddleware from '../../middlewares/authMiddleware';
 import { UserRole } from './user.constant';
 import { changeStatusValidationSchema } from './user.validation';
+import upload from '../../helper/upload';
 
 const router = express.Router();
 
@@ -41,6 +43,8 @@ router.get('/get-all-users', authMiddleware(UserRole.admin), getAllUsers);
 router.get('/get-single-user/:id', getSingleUser);
 router.get('/get-me', authMiddleware('student', 'faculty', 'admin'), getMe);
 router.patch('/change-status/:id', authMiddleware('admin'), validationMiddleware(changeStatusValidationSchema), changeStatus);
+
+router.post('/upload-image', upload.single('image'), uploadImage)
 
 
 export const UserRoutes = router;

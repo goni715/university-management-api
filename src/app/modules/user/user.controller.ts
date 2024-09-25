@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { UserServices } from "./user.service";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
+import uploadImageToCloudinary from "../../utils/uploadImageToCloudinary";
 
 
 const createStudent = async (req: Request, res: Response, next: NextFunction) => {
@@ -121,6 +122,16 @@ const changeStatus = catchAsync(async (req, res) => {
 });
 
 
+
+const uploadImage = catchAsync(async (req, res) => {
+  const result = await uploadImageToCloudinary();
+  res.status(200).json({
+    status: true,
+    message: 'Image Uploaded successfully',
+    data: result
+  });
+});
+
   export {
     createStudent,
     createAdmin,
@@ -128,5 +139,6 @@ const changeStatus = catchAsync(async (req, res) => {
     getAllUsers,
     getSingleUser,
     getMe,
-    changeStatus
+    changeStatus,
+    uploadImage
   }
