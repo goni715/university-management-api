@@ -11,7 +11,7 @@ export const createUserNameValidationSchema = z.object({
 
 
 export const createFacultyValidationSchema = z.object({
-   password: z.string(),
+   password: z.string().optional(),
    facultyData: z.object({
     name: createUserNameValidationSchema,
     email: z.string().email(),

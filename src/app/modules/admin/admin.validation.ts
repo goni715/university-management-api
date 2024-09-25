@@ -11,7 +11,7 @@ export const createUserNameValidationSchema = z.object({
 
 
 export const createAdminValidationSchema = z.object({
-   password: z.string(),
+   password: z.string().optional(),
    adminData: z.object({
     name: createUserNameValidationSchema,
     email: z.string().email(),

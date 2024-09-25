@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import {
   changeStatus,
   createAdmin,
@@ -23,6 +23,11 @@ const router = express.Router();
 router.post(
   '/create-student',
   authMiddleware(UserRole.admin),
+  upload.single('image'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next()
+  },
   validationMiddleware(createStudentValidationSchema),
   createStudent,
 );
@@ -44,7 +49,8 @@ router.get('/get-single-user/:id', getSingleUser);
 router.get('/get-me', authMiddleware('student', 'faculty', 'admin'), getMe);
 router.patch('/change-status/:id', authMiddleware('admin'), validationMiddleware(changeStatusValidationSchema), changeStatus);
 
-router.post('/upload-image', upload.single('image'), uploadImage)
+router.post('/upload-image', upload.single('image'), uploadImage);
+
 
 
 export const UserRoutes = router;

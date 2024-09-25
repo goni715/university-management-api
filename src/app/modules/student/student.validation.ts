@@ -53,13 +53,9 @@ const createLocalGuardianValidationSchema = z.object({
 
 
 
-
-
-
-
 // Zod schema for TStudent
 const createStudentValidationSchema = z.object({
-  password: z.string().min(6).max(20),
+  password: z.string().optional(),
   studentData: z.object({
     name: createUserNameValidationSchema,
     email: z
