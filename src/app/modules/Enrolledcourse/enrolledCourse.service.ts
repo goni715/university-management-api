@@ -9,6 +9,7 @@ import SemesterRegistrationModel from "../semesterRegistration/semesterRegistrat
 import CourseModel from "../Course/course.model";
 import FacultyModel from "../faculty/faculty.model";
 import { calculateGradeAndPoints } from "./enrolledCourse.utils";
+import QueryBuilder from "../../builder/Querybuilder";
 
 
 const createEnrolledCourseService = async (userId:string, payload: Pick<TEnrolledCourse, 'offeredCourse'>) => {
@@ -237,8 +238,81 @@ const updateEnrolledCourseMarksService = async (facultyId: string, payload: Part
 }
 
 
+const getAllEnrolledCoursesOfFacultyService = async (
+    facultyId: string,
+    query: Record<string, unknown>,
+  ) => {
+    const faculty = await FacultyModel.findOne({ id: facultyId });
+  
+    if (!faculty) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Faculty not found !');
+    }
+  
+    const enrolledCourseQuery = new QueryBuilder(
+      EnrolledCourseModel.find({
+        faculty: faculty._id,
+      }).populate(
+        'semesterRegistration academicSemester academicFaculty academicDepartment offeredCourse course student faculty',
+      ),
+      query,
+    )
+      .filter()
+      .sort()
+      .paginate()
+      .fields();
+  
+    const result = await enrolledCourseQuery.modelQuery;
+    const meta = await enrolledCourseQuery.countTotal();
+  
+    return {
+      meta,
+      result,
+    };
+  };
+
+
+ 
+const getMyEnrolledCoursesService = async (
+    studentId: string,
+    query: Record<string, unknown>,
+  ) => {
+    const student = await StudentModel.findOne({ id: studentId });
+  
+    if (!student) {
+      throw new AppError(httpStatus.NOT_FOUND, 'Student not found !');
+    }
+  
+    const enrolledCourseQuery = new QueryBuilder(
+      EnrolledCourseModel.find({ student: student._id }).populate(
+        'semesterRegistration academicSemester academicFaculty academicDepartment offeredCourse course student faculty',
+      ),
+      query,
+    )
+      .filter()
+      .sort()
+      .paginate()
+      .fields();
+  
+    const result = await enrolledCourseQuery.modelQuery;
+    const meta = await enrolledCourseQuery.countTotal();
+  
+    return {
+      meta,
+      result,
+    };
+  };
+  
+
+
+
+
+
+
+
 export {
     createEnrolledCourseService,
-    updateEnrolledCourseMarksService
+    updateEnrolledCourseMarksService,
+    getAllEnrolledCoursesOfFacultyService,
+    getMyEnrolledCoursesService
 }
 
