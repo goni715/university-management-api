@@ -19,7 +19,7 @@ const updateEnrolledCourseMarks = catchAsync(async(req, res)=>{
     const userId = req.user.userId;
     const result = await updateEnrolledCourseMarksService(userId, req.body);
     sendResponse(res, {
-        statusCode: 201,
+        statusCode: 200,
         status: true,
         message: 'Enrolled Course Marks is updated successfully',
         data: result,

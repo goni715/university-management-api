@@ -89,6 +89,12 @@ const getAllStudentsService = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await studentQuery.modelQuery;
+  const meta = await studentQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 
   return result;
 };
