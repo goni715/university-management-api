@@ -1,7 +1,7 @@
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 import SemesterRegistrationModel from "../semesterRegistration/semesterRegistration.model";
-import { TDays, TOfferedCourse, TSchedule } from "./offeredCourse.interface";
+import { TOfferedCourse } from "./offeredCourse.interface";
 import OfferedCourseModel from "./offeredCourse.model";
 import AcademicFacultyModel from "../academicFaculty/academicFaculty.model";
 import AcademicDepartmentModel from "../academicDepartment/academicDepartment.model";
