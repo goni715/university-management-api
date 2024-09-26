@@ -1,6 +1,6 @@
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { createEnrolledCourseService } from "./enrolledCourse.service";
+import { createEnrolledCourseService, updateEnrolledCourseMarksService } from "./enrolledCourse.service";
 
 
 const createEnrolledCourse = catchAsync(async(req, res)=>{
@@ -15,7 +15,20 @@ const createEnrolledCourse = catchAsync(async(req, res)=>{
 })
 
 
+const updateEnrolledCourseMarks = catchAsync(async(req, res)=>{
+    const userId = req.user.userId;
+    const result = await updateEnrolledCourseMarksService(userId, req.body);
+    sendResponse(res, {
+        statusCode: 201,
+        status: true,
+        message: 'Enrolled Course Marks is updated successfully',
+        data: result,
+     })
+})
+
+
 
 export {
-    createEnrolledCourse
+    createEnrolledCourse,
+    updateEnrolledCourseMarks
 }
