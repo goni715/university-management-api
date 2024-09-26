@@ -4,6 +4,7 @@ import OfferedCourseModel from "../OfferedCourse/offeredCourse.model";
 import { TEnrolledCourse } from "./enrolledCourse.interface";
 import StudentModel from "../student/student.model";
 import EnrolledCourseModel from "./enrolledCourse.model";
+import mongoose from "mongoose";
 
 
 const createEnrolledCourseService = async (userId:string, payload: Pick<TEnrolledCourse, 'offeredCourse'>) => {
@@ -44,7 +45,47 @@ const createEnrolledCourseService = async (userId:string, payload: Pick<TEnrolle
     }
     
 
-    return null;
+    const session = await mongoose.startSession();
+    try{
+
+        session.startTransaction();
+
+        //destructuring isOfferedCourseExists
+        const { semesterRegistration, academicSemester, academicFaculty, academicDepartment, faculty, course } = isOfferedCourseExists;
+
+
+        const result = await EnrolledCourseModel.create([{
+            semesterRegistration,
+            academicSemester,
+            academicFaculty,
+            academicDepartment,
+            offeredCourse,
+            course,
+            student: student._id,
+            faculty,
+            isEnrolled: true
+        }], {session})
+    
+        if(!result){
+            throw new AppError(httpStatus.BAD_REQUEST, `Failled to enrolled in course !`)
+        }
+
+        //update maxCapacity- reduce maxCapacity
+        const maxCapacity = isOfferedCourseExists.maxCapacity;
+        await OfferedCourseModel.findByIdAndUpdate(offeredCourse, {
+          maxCapacity: maxCapacity - 1,
+        }, {session});
+
+       await session.commitTransaction();
+       await session.endSession();
+
+       return result;
+
+    }catch(err:any){
+        await session.abortTransaction();
+        await session.endSession();
+        throw new Error(err)
+    }
 };
 
 

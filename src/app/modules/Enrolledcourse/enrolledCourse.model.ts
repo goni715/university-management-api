@@ -46,7 +46,7 @@ const enrolledCourseSchema = new Schema<TEnrolledCourse>({
         required:true,
         ref: 'AcademicFaculty'
     },
-    academicDepartement: {
+    academicDepartment: {
         type: Schema.Types.ObjectId,
         required:true,
         ref: 'AcademicDepartment'
@@ -75,7 +75,10 @@ const enrolledCourseSchema = new Schema<TEnrolledCourse>({
         type: Boolean,
         default: false
     },
-    courseMarks: courseMarksSchema,
+    courseMarks: {
+        type: courseMarksSchema,
+        default: {}
+    },
     grade: {
         type: String,
         enum: Grade,

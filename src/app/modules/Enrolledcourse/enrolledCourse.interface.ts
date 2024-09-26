@@ -15,7 +15,7 @@ export type TEnrolledCourse = {
     semesterRegistration: Types.ObjectId;
     academicSemester: Types.ObjectId;
     academicFaculty: Types.ObjectId;
-    academicDepartement: Types.ObjectId;
+    academicDepartment: Types.ObjectId;
     offeredCourse: Types.ObjectId;
     course: Types.ObjectId;
     student: Types.ObjectId;
