@@ -1,13 +1,14 @@
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 import OfferedCourseModel from "../OfferedCourse/offeredCourse.model";
-import { TEnrolledCourse } from "./enrolledCourse.interface";
+import { TCourseMarks, TEnrolledCourse } from "./enrolledCourse.interface";
 import StudentModel from "../student/student.model";
 import EnrolledCourseModel from "./enrolledCourse.model";
 import mongoose from "mongoose";
 import SemesterRegistrationModel from "../semesterRegistration/semesterRegistration.model";
 import CourseModel from "../Course/course.model";
 import FacultyModel from "../faculty/faculty.model";
+import { calculateGradeAndPoints } from "./enrolledCourse.utils";
 
 
 const createEnrolledCourseService = async (userId:string, payload: Pick<TEnrolledCourse, 'offeredCourse'>) => {
@@ -193,16 +194,46 @@ const updateEnrolledCourseMarksService = async (facultyId: string, payload: Part
     //     'courseMarks.classTest2': 9,
     //     'courseMarks.finalTerm': 9
     // }
-    
-    const result = await EnrolledCourseModel.findByIdAndUpdate(isCourseBelongToFaculty._id,
+
+    const session = await mongoose.startSession()
+
+   try{
+    session.startTransaction();
+
+    const courseMarksUpdateResult = await EnrolledCourseModel.findByIdAndUpdate(isCourseBelongToFaculty._id,
         modifiedData,
         {
-            new:true
+            new:true,
+            session
         }
     )
 
-    return result;
+    
 
+    if(courseMarks?.finalTerm){
+        const { classTest1, classTest2, midTerm, finalTerm } = courseMarksUpdateResult?.courseMarks as TCourseMarks;
+        const toTalMarks = Number(classTest1 + classTest2 + midTerm + finalTerm);
+        const {grade, gradePoints} = calculateGradeAndPoints(toTalMarks);
+       
+        //update grade & gradePoints
+        await EnrolledCourseModel.findByIdAndUpdate(isCourseBelongToFaculty._id,
+           {grade, gradePoints: gradePoints.toFixed(2), isCompleted:true },
+            {
+                new:true,
+                session
+            }
+        )  
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+    return null;
+    
+   }catch(err:any){
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err)
+   }
 }
 
 

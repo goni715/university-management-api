@@ -93,9 +93,9 @@ const enrolledCourseSchema = new Schema<TEnrolledCourse>({
         default: 'NA'
     },
     gradePoints: {
-        type: Number,
-        min: 0,
-        max: 4,
+        type: Schema.Types.Decimal128,
+        min: 0.00,
+        max: 4.00,
         default: 0
     },
     isCompleted: {

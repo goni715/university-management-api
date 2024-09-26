@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 
-export type TGrade = 'A' | 'B' | 'C' | 'D' | 'F' | 'NA';
+export type TGrade = 'A+'| 'A' | 'A-' | 'B+' | 'B' | 'B-' | "C+" | 'C' | 'D' | 'F' | 'NA';
 
 export type TCourseMarks = {
     classTest1: number;
@@ -23,6 +23,6 @@ export type TEnrolledCourse = {
     isEnrolled: boolean;
     courseMarks: TCourseMarks;
     grade: TGrade,
-    gradePoints: number;
+    gradePoints: Types.Decimal128;
     isCompleted: boolean;
 }
