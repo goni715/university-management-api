@@ -7,6 +7,7 @@ import EnrolledCourseModel from "./enrolledCourse.model";
 import mongoose from "mongoose";
 import SemesterRegistrationModel from "../semesterRegistration/semesterRegistration.model";
 import CourseModel from "../Course/course.model";
+import FacultyModel from "../faculty/faculty.model";
 
 
 const createEnrolledCourseService = async (userId:string, payload: Pick<TEnrolledCourse, 'offeredCourse'>) => {
@@ -157,8 +158,50 @@ const updateEnrolledCourseMarksService = async (facultyId: string, payload: Part
         throw new AppError(httpStatus.NOT_FOUND, `Student not found !`)
     }
 
+    const faculty = await FacultyModel.findOne({ id: facultyId}, {_id:1});
+    if(!faculty){
+        throw new AppError(httpStatus.NOT_FOUND, `Faculty not found !`)
+    }
 
-    return null;
+    const isCourseBelongToFaculty = await EnrolledCourseModel.findOne({
+        semesterRegistration,
+        offeredCourse,
+        student,
+        faculty: faculty?._id
+    })
+
+    if(!isCourseBelongToFaculty){
+        throw new AppError(httpStatus.FORBIDDEN, `You are forbidden !`)
+    }
+
+   
+    //dynamically update course marks
+    const modifiedData : Record<string, unknown> = {}
+
+   
+
+    if(courseMarks && Object.keys(courseMarks).length){
+        for (const [key, value] of Object.entries(courseMarks)){
+            modifiedData[`courseMarks.${key}`] =value
+        }
+    }
+
+    // console.log(modifiedData);
+    // const outputModifiedData = {
+    //     'courseMarks.classTest1': 3,
+    //     'courseMarks.midTerm': 6,
+    //     'courseMarks.classTest2': 9,
+    //     'courseMarks.finalTerm': 9
+    // }
+    
+    const result = await EnrolledCourseModel.findByIdAndUpdate(isCourseBelongToFaculty._id,
+        modifiedData,
+        {
+            new:true
+        }
+    )
+
+    return result;
 
 }
 
