@@ -8,6 +8,7 @@ import uploadImageToCloudinary from "../../utils/uploadImageToCloudinary";
 const createStudent = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {password, studentData} = req.body;
+        console.log("Create student");
      
        const result = await UserServices.createStudentService(req.file, password, studentData);
   

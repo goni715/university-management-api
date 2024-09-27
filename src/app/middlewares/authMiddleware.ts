@@ -6,16 +6,16 @@ import config from '../config';
 import { TUserRole } from '../modules/user/user.interface';
 import UserModel from '../modules/user/user.model';
 import { isJWTIssuedBeforePasswordChanged } from '../modules/Auth/auth.utils';
+import catchAsync from '../utils/catchAsync';
 
 const authMiddleware = (...requiredRoles: TUserRole[]) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
 
     if (!token) {
       throw new AppError(httpStatus.UNAUTHORIZED, `You are not unauthorized !`);
     }
 
-    try {
       const decoded = jwt.verify(
         token,
         config.jwt_access_secret as string,
@@ -58,12 +58,7 @@ const authMiddleware = (...requiredRoles: TUserRole[]) => {
 
       req.user = decoded;
       next();
-    } catch (err: unknown) {
-      return next(
-        new AppError(httpStatus.UNAUTHORIZED, 'Invalid or expired token!'),
-      );
-    }
-  };
+  });
 };
 
 export default authMiddleware;

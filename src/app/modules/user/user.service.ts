@@ -43,10 +43,12 @@ const createStudentService = async (
       studentData.admissionSemester,
     );
 
+
     //set manually generated id
     userData.id = await generateStudentId(
       admissionSemester as TAcademicSemester & { _id: Types.ObjectId },
     );
+    
 
     //upload image to cloudinary
     const cloudinaryRes = await uploadImageToCloudinary(file?.path);
@@ -73,6 +75,7 @@ const createStudentService = async (
     await session.endSession();
 
     return newStudent[0];
+    return null;
   } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
