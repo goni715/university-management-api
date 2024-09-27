@@ -96,7 +96,6 @@ const getAllStudentsService = async (query: Record<string, unknown>) => {
     result,
   };
 
-  return result;
 };
 
 const getSingleStudentService = async (id: string) => {

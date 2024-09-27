@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post('/create-enrolled-course', authMiddleware('student'), validationMiddleware(createEnrolledCourseValidationSchma), createEnrolledCourse);
 
-router.patch('/update-enrolled-course-marks', authMiddleware('faculty'), validationMiddleware(updateEnrolledCourseValidationSchema), updateEnrolledCourseMarks);
+router.patch('/update-enrolled-course-marks', authMiddleware('faculty', 'admin', 'superAdmin'), validationMiddleware(updateEnrolledCourseValidationSchema), updateEnrolledCourseMarks);
 
 router.get(
     '/get-all-enrolled-courses-of-faculty',

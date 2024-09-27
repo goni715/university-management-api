@@ -10,6 +10,7 @@ import FacultyModel from "../faculty/faculty.model";
 import { hasTimeConflict } from "./OfferedCourse.utils";
 import QueryBuilder from "../../builder/Querybuilder";
 import { Types } from "mongoose";
+import StudentModel from "../student/student.model";
 
 
 const createOfferedCourseService = async (PostBody: TOfferedCourse) => {
@@ -133,8 +134,34 @@ const getAllOfferedCoursesService = async (query: Record<string, unknown>) => {
 
 
   const result = await offeredCourseQuery.modelQuery;
-  return result;
+  const meta = await offeredCourseQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
+
+
+
+
+const getMyOfferedCoursesService = async (userId : string) => {
+ 
+  //find the student
+  const student = await StudentModel.findOne({id:userId});
+  if(!student){
+    throw new AppError(httpStatus.NOT_FOUND, `Student not found`);
+  }
+  
+  const result = await OfferedCourseModel.find({
+    academicDepartment: student?.academicDepartment
+  });
+
+  return result;
+
+};
+
+
 
 
 const getSingleOfferedCourseService = async (id: string) => {
@@ -219,6 +246,7 @@ const {faculty, days, startTime, endTime} = updateData;
 export {
     createOfferedCourseService,
     getAllOfferedCoursesService,
+    getMyOfferedCoursesService,
     getSingleOfferedCourseService,
     updateOfferdCourseService
 }

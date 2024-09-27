@@ -1,6 +1,6 @@
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { createOfferedCourseService, getAllOfferedCoursesService, getSingleOfferedCourseService, updateOfferdCourseService } from "./offeredCourse.service";
+import { createOfferedCourseService, getAllOfferedCoursesService, getMyOfferedCoursesService, getSingleOfferedCourseService, updateOfferdCourseService } from "./offeredCourse.service";
 
 
 const createOfferedCourse = catchAsync(async(req, res)=>{
@@ -25,6 +25,18 @@ const getAllOfferedCourses = catchAsync( async (req, res) => {
       });
   });
 
+
+  
+const getMyOfferedCourses = catchAsync( async (req, res) => {
+  const userId = req.user.userId;
+
+    const result = await getMyOfferedCoursesService(userId);
+    res.status(200).json({
+      status: true,
+      message: 'My Offered Courses are retrieved successfully',
+      data: result,
+    });
+});
 
   
 const getSingleOfferedCourse = catchAsync(async (req, res) => {
@@ -54,6 +66,7 @@ const updateOfferedCourse = catchAsync( async (req, res) =>{
 export {
     createOfferedCourse,
     getAllOfferedCourses,
+    getMyOfferedCourses,
     getSingleOfferedCourse,
     updateOfferedCourse
 }
