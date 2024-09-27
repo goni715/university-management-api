@@ -13,7 +13,6 @@ const getAllDepartmentsService = async () => {
 };
 
 const getSingleDepartmentService = async (id: string) => {
-  const ObjectId = Types.ObjectId;
   const result = await AcademicDepartmentModel.findById(id).populate('academicFaculty');
   return result;
 };

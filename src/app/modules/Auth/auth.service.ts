@@ -3,7 +3,7 @@ import AppError from '../../errors/AppError';
 import UserModel from '../user/user.model';
 import { TChangePassword, TLoginUser } from './auth.interface';
 import { checkPassword, createToken, hashedPassword, isJWTIssuedBeforePasswordChanged, verifyToken } from './auth.utils';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 import sendEmail from '../../utils/sendEmail';
 

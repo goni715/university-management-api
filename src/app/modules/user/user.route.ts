@@ -26,7 +26,7 @@ router.post(
   upload.single('image'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
-    next()
+    next();
   },
   validationMiddleware(createStudentValidationSchema),
   createStudent,
@@ -38,7 +38,7 @@ router.post(
   upload.single('image'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
-    next()
+    next();
   },
   validationMiddleware(createAdminValidationSchema),
   createAdmin,
@@ -50,19 +50,39 @@ router.post(
   upload.single('image'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
-    next()
+    next();
   },
   validationMiddleware(createFacultyValidationSchema),
   createFaculty,
 );
 
-router.get('/get-all-users', authMiddleware(UserRole.admin), getAllUsers);
-router.get('/get-single-user/:id', getSingleUser);
-router.get('/get-me', authMiddleware('student', 'faculty', 'admin'), getMe);
-router.patch('/change-status/:id', authMiddleware('admin'), validationMiddleware(changeStatusValidationSchema), changeStatus);
+router.get(
+  '/get-all-users',
+  authMiddleware(UserRole.admin, UserRole.superAdmin),
+  getAllUsers,
+);
+router.get(
+  '/get-single-user/:id',
+  authMiddleware(UserRole.admin, UserRole.superAdmin),
+  getSingleUser,
+);
+router.get(
+  '/get-me',
+  authMiddleware(
+    UserRole.superAdmin,
+    UserRole.admin,
+    UserRole.faculty,
+    UserRole.student,
+  ),
+  getMe,
+);
+router.patch(
+  '/change-status/:id',
+  authMiddleware('admin', 'superAdmin'),
+  validationMiddleware(changeStatusValidationSchema),
+  changeStatus,
+);
 
 router.post('/upload-image', upload.single('image'), uploadImage);
-
-
 
 export const UserRoutes = router;

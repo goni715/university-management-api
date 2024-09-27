@@ -1,5 +1,4 @@
-import { Request, RequestHandler, Response, NextFunction } from 'express';
-
+import { RequestHandler } from 'express';
 import sendResponse from '../../utils/sendResponse';
 import catchAsync from '../../utils/catchAsync';
 import { deleteAdminService, getAllAdminsService, getSingleAdminService, updateAdminService } from './admin.service';

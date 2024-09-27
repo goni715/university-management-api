@@ -15,29 +15,34 @@ import {
   removeFacultiesFromCourse,
   updateCourse,
 } from './course.controller';
+import authMiddleware from '../../middlewares/authMiddleware';
+import { UserRole } from '../user/user.constant';
 
 const router = express.Router();
 
 router.post(
   '/create-course',
+  authMiddleware(UserRole.admin, UserRole.superAdmin),
   validationMiddleware(createCourseValidationSchema),
   createCourse,
 );
-router.get('/get-all-courses', getAllCourses);
-router.get('/get-single-course/:id', getSingleCourse);
+
+router.get('/get-all-courses', authMiddleware(UserRole.admin, UserRole.superAdmin, UserRole.faculty, UserRole.student), getAllCourses);
+router.get('/get-single-course/:id',  authMiddleware(UserRole.admin, UserRole.superAdmin, UserRole.faculty, UserRole.student), getSingleCourse);
 router.patch(
   '/update-course/:id',
+  authMiddleware(UserRole.admin, UserRole.superAdmin),
   validationMiddleware(updateCourseValidationSchema),
   updateCourse,
 );
 
-router.delete('/delete-course/:id', deleteCourse);
+router.delete('/delete-course/:id',  authMiddleware(UserRole.admin, UserRole.superAdmin), deleteCourse);
 
-router.put('/assign-faculties-with-course/:courseId', validationMiddleware(facultiesWithCourseValidationSchema), assignCourseFaculties);
+router.put('/assign-faculties-with-course/:courseId',  authMiddleware(UserRole.admin, UserRole.superAdmin), validationMiddleware(facultiesWithCourseValidationSchema), assignCourseFaculties);
 
-router.delete('/remove-faculties-from-course/:courseId', validationMiddleware(facultiesWithCourseValidationSchema),  removeFacultiesFromCourse);
+router.delete('/remove-faculties-from-course/:courseId',  authMiddleware(UserRole.admin, UserRole.superAdmin), validationMiddleware(facultiesWithCourseValidationSchema),  removeFacultiesFromCourse);
 
-router.get('/get-all-course-faculties', getAllCourseFaculties);
+router.get('/get-all-course-faculties', authMiddleware(UserRole.admin, UserRole.superAdmin, UserRole.faculty, UserRole.student), getAllCourseFaculties);
 
 
 
