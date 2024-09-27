@@ -22,7 +22,7 @@ const router = express.Router();
 
 router.post(
   '/create-student',
-  authMiddleware(UserRole.admin),
+  authMiddleware(UserRole.admin, UserRole.superAdmin),
   upload.single('image'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
@@ -34,6 +34,7 @@ router.post(
 
 router.post(
   '/create-admin',
+  authMiddleware('superAdmin'),
   upload.single('image'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
