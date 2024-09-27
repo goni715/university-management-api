@@ -1,6 +1,6 @@
 import mongoose, { Types } from 'mongoose';
-import { TCourse, TCourseFaculty } from './course.interface';
-import CourseModel, { CourseFacultyModel } from './course.model';
+import { TCourse } from './course.interface';
+import CourseModel from './course.model';
 import QueryBuilder from '../../builder/Querybuilder';
 import { CourseSearchableFields } from './course.constant';
 import AppError from '../../errors/AppError';
@@ -117,60 +117,6 @@ const deleteCourseService = async(id: string) => {
 
 
 
-const assignCourseFacultiesService = async(id: string, faculties: Partial<TCourseFaculty>) => {
-  const ObjectId = Types.ObjectId;
-
-  //using updateOne()
-  const result = await CourseFacultyModel.updateOne(
-    { _id: new ObjectId(id)},
-    {
-      course: id,
-      $addToSet: { faculties: {$each: faculties} }
-    },
-    {upsert:true}
-  )
-
-  //using findByIdAndUpdate()
-  // const result = await CourseFacultyModel.findByIdAndUpdate(
-  //   id,
-  //   {
-  //     course: id,
-  //     $addToSet: { faculties: {$each: faculties} }
-  //   },
-  //   {upsert:true, new:true}
-  // )
-  return result;
-}
-
-
-const removeFacultiesFromCourseService = async(id: string, faculties: Partial<TCourseFaculty>) => {
-  const ObjectId = Types.ObjectId;
-
-  //using updateOne()
-  // const result = await CourseFacultyModel.updateOne(
-  //   { _id: new ObjectId(id)},
-  //   {
-  //     $pull: { faculties: {$in: faculties} }
-  //   },
-  //   {upsert:true}
-  // )
-
-  //using findByIdAndUpdate()
-  const result = await CourseFacultyModel.findByIdAndUpdate(
-    id,
-    {
-      $pull: { faculties: {$in: faculties} }
-    },
-    {new:true}
-  )
-  return result;
-}
-
-
-const getAllCourseFacultiesService = async () => {
-  const result = await CourseFacultyModel.find().populate('course');
-  return result;
-};
 
 
 
@@ -179,8 +125,5 @@ export {
  getAllCoursesService,
  getSingleCourseService,
  updateCourseService,
- deleteCourseService,
- assignCourseFacultiesService,
- removeFacultiesFromCourseService,
- getAllCourseFacultiesService
+ deleteCourseService
 };

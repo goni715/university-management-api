@@ -1,18 +1,14 @@
 import express from 'express';
 import validationMiddleware from '../../middlewares/validationMiddleware';
 import {
-  facultiesWithCourseValidationSchema,
   createCourseValidationSchema,
   updateCourseValidationSchema,
 } from './course.validation';
 import {
-  assignCourseFaculties,
   createCourse,
   deleteCourse,
-  getAllCourseFaculties,
   getAllCourses,
   getSingleCourse,
-  removeFacultiesFromCourse,
   updateCourse,
 } from './course.controller';
 import authMiddleware from '../../middlewares/authMiddleware';
@@ -37,12 +33,6 @@ router.patch(
 );
 
 router.delete('/delete-course/:id',  authMiddleware(UserRole.admin, UserRole.superAdmin), deleteCourse);
-
-router.put('/assign-faculties-with-course/:courseId',  authMiddleware(UserRole.admin, UserRole.superAdmin), validationMiddleware(facultiesWithCourseValidationSchema), assignCourseFaculties);
-
-router.delete('/remove-faculties-from-course/:courseId',  authMiddleware(UserRole.admin, UserRole.superAdmin), validationMiddleware(facultiesWithCourseValidationSchema),  removeFacultiesFromCourse);
-
-router.get('/get-all-course-faculties', authMiddleware(UserRole.admin, UserRole.superAdmin, UserRole.faculty, UserRole.student), getAllCourseFaculties);
 
 
 
