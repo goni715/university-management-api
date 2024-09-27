@@ -53,10 +53,14 @@ const assignCourseFacultiesService = async(id: string, faculties: Partial<TCours
   
   
   const getAllCourseFacultiesService = async () => {
-    const result = await CourseFacultyModel.find().populate('course');
+    const result = await CourseFacultyModel.find().populate('course', 'title');
     return result;
   };
 
+  const getFacultiesWithCourseService = async (courseId: string) => {
+    const result = await CourseFacultyModel.findOne({course: courseId}).populate('faculties');
+    return result;
+  };
 
 
 
@@ -64,5 +68,6 @@ const assignCourseFacultiesService = async(id: string, faculties: Partial<TCours
   export {
     assignCourseFacultiesService,
     removeFacultiesFromCourseService,
-    getAllCourseFacultiesService
+    getAllCourseFacultiesService,
+    getFacultiesWithCourseService
   }

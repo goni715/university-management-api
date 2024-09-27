@@ -14,7 +14,12 @@ const courseFacultySchema = new Schema<TCourseFaculty>({
         ref: 'Faculty'
       }
     ]
-  }) 
+  },
+  {
+    timestamps:true,
+    versionKey: false
+  }
+) 
   
   
   const CourseFacultyModel = model<TCourseFaculty>('CourseFaculty', courseFacultySchema);

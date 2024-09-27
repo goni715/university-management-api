@@ -1,6 +1,6 @@
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { assignCourseFacultiesService, getAllCourseFacultiesService, removeFacultiesFromCourseService } from "./courseFaculty.service";
+import { assignCourseFacultiesService, getAllCourseFacultiesService, getFacultiesWithCourseService, removeFacultiesFromCourseService } from "./courseFaculty.service";
 
 const assignCourseFaculties = catchAsync( async (req, res) =>{
     const {courseId} = req.params;
@@ -41,8 +41,20 @@ const getAllCourseFaculties = catchAsync( async (req, res) => {
 });
 
 
+const getFacuctiesWithCourse = catchAsync( async (req, res) => {
+    const {courseId} = req.params;
+    const result = await getFacultiesWithCourseService(courseId);
+    sendResponse(res, {
+        statusCode: 200,
+        status: true,
+        message: 'Faculties with course are retrieved successfully',
+        data: result,
+     })
+});
+
 export {
     assignCourseFaculties,
     removeFacultiesFromCourse,
-    getAllCourseFaculties
+    getAllCourseFaculties,
+    getFacuctiesWithCourse
 }
