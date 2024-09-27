@@ -11,6 +11,13 @@ import OfferedCourseModel from "../OfferedCourse/offeredCourse.model";
 
 const createSemesterRegistrationService = async (payload: TSemesterRegistration) => {
 
+    /**
+   * Step1: Check if there any registered semester that is already 'UPCOMING'|'ONGOING'
+   * Step2: Check if the semester is exist
+   * Step3: Check if the semester is already registered!
+   * Step4: Create the semester registration
+   */
+
     const academicSemesterId = payload?.academicSemester;
 
     //check if there any registered semester that is already 'UPCOMING' / 'ONGOING
@@ -65,6 +72,20 @@ const createSemesterRegistrationService = async (payload: TSemesterRegistration)
 
 
 const updateSemesterRegistrationService = async (id: string, updateData: Partial<TSemesterRegistration>) => {
+
+    /**
+   * Step1: Check if the semester is exist
+   * Step2: Check if the requested registered semester is exists
+   * Step3: If the requested semester registration is ended, we will not update anything
+   * Step4: If the requested semester registration is 'UPCOMING', we will let update everything.
+   * Step5: If the requested semester registration is 'ONGOING', we will not update anything  except status to 'ENDED'
+   * Step6: If the requested semester registration is 'ENDED' , we will not update anything
+   *
+   * UPCOMING --> ONGOING --> ENDED
+   *
+   */
+
+
   //check if the requested register semester is exists
   // check if the semester is already registered
   const isSemesterRegistrationExists = await SemesterRegistrationModel.findById(id);
@@ -105,6 +126,13 @@ const updateSemesterRegistrationService = async (id: string, updateData: Partial
   
 
 const deleteSemesterRegistrationService = async(id:string) => {
+  
+    /** 
+  * Step1: Delete associated offered courses.
+  * Step2: Delete semester registraton when the status is 
+  'UPCOMING'.
+  **/
+
    // checking if the semester registration is exist
    const isSemesterRegistrationExists = await SemesterRegistrationModel.findById(id);
 
