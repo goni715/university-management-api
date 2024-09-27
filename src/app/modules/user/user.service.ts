@@ -42,16 +42,33 @@ const createStudentService = async (
     const admissionSemester = await AcademicSemesterModel.findById(
       studentData.admissionSemester,
     );
+    if (!admissionSemester) {
+      throw new AppError(400, 'Admission Semester not found');
+    }
 
+    // find academic department info
+    const academicDepartment = await AcademicDepartmentModel.findById(
+      studentData.academicDepartment,
+    );
 
+    if (!academicDepartment) {
+      throw new AppError(400, 'Academic department not found');
+    }
+
+    //set academicFaculty
+    studentData.academicFaculty=academicDepartment?.academicFaculty;
+
+    
     //set manually generated id
     userData.id = await generateStudentId(
       admissionSemester as TAcademicSemester & { _id: Types.ObjectId },
     );
-    
 
-    //upload image to cloudinary
-    const cloudinaryRes = await uploadImageToCloudinary(file?.path);
+    //if there is a file -- upload image to cloudinary
+    if(file){
+      const cloudinaryRes = await uploadImageToCloudinary(file?.path);
+      studentData.profileImg = cloudinaryRes?.secure_url;
+    }
 
     //create a user (transaction-01)
     const newUser = await UserModel.create([userData], { session }); //built-in static method
@@ -62,7 +79,6 @@ const createStudentService = async (
     // set id, _id as user
     studentData.id = newUser[0].id;
     studentData.user = newUser[0]._id;
-    studentData.profileImg = cloudinaryRes?.secure_url;
 
     //create a student (transaction-02)
     const newStudent = await StudentModel.create([studentData], { session });
@@ -109,8 +125,11 @@ const createAdminService = async (
     //set manually generated id
     userData.id = await generateAdminId();
 
-    //upload image to cloudinary
-    const cloudinaryRes = await uploadImageToCloudinary(file?.path);
+     //if there is a file -- upload image to cloudinary
+     if(file){
+      const cloudinaryRes = await uploadImageToCloudinary(file?.path);
+      adminData.profileImg = cloudinaryRes?.secure_url;
+    }
 
     //create a user (transaction-01)
     const newUser = await UserModel.create([userData], { session }); //built-in static method
@@ -121,7 +140,6 @@ const createAdminService = async (
     //set id, _id as user
     adminData.id = newUser[0].id;
     adminData.user = newUser[0]._id;
-    adminData.profileImg = cloudinaryRes?.secure_url;
 
     //create a admin (transaction-02)
     const newAdmin = await AdminModel.create([adminData], { session });
@@ -178,8 +196,11 @@ const createFacultyService = async (
     //set manually generated id
     userData.id = await generateFacultyId();
 
-     //upload image to cloudinary
-     const cloudinaryRes = await uploadImageToCloudinary(file?.path);
+      //if there is a file -- upload image to cloudinary
+      if(file){
+        const cloudinaryRes = await uploadImageToCloudinary(file?.path);
+        facultyData.profileImg = cloudinaryRes?.secure_url;
+      }
 
     //create a user (transaction-01)
     const newUser = await UserModel.create([userData], { session }); //built-in static method
@@ -190,7 +211,6 @@ const createFacultyService = async (
     //set id, _id as user
     facultyData.id = newUser[0].id;
     facultyData.user = newUser[0]._id;
-    facultyData.profileImg = cloudinaryRes?.secure_url;
 
     //create a admin (transaction-02)
     const newFaculty = await FacultyModel.create([facultyData], { session });

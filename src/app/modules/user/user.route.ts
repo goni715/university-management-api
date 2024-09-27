@@ -46,7 +46,7 @@ router.post(
 
 router.post(
   '/create-faculty',
-  authMiddleware('admin'),
+  authMiddleware('admin', 'superAdmin'),
   upload.single('image'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
