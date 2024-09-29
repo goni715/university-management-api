@@ -185,6 +185,39 @@ const getMyOfferedCoursesService = async (userId : string) => {
         foreignField: '_id',
         as:'course'
       }
+    },
+    {
+      $unwind: '$course'
+    },
+    {
+      $lookup : {
+        from: 'enrolledCourses',
+        let: {
+          currentOngoingRegistrationSemester:
+            currentOngoingRegistrationSemester._id,
+          currentStudent: student._id,
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and : [
+                  {
+                    $eq: ['$semesterRegistration', '$$currentOngoingRegistrationSemester']
+                  },
+                  {
+                    $eq: ['$student', '$$currentStudent']
+                  },
+                  {
+                    $eq: ['$isEnrolled', true],
+                  },
+                ]
+              }
+            }
+          }
+        ],
+        as: 'enrolledCourses'
+      }
     }
   ])
 
