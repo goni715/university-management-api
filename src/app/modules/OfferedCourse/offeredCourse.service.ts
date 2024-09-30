@@ -168,7 +168,6 @@ const getMyOfferedCoursesService = async (userId : string) => {
     }
 
 
-
   
   const result = await OfferedCourseModel.aggregate([
     {
@@ -191,7 +190,7 @@ const getMyOfferedCoursesService = async (userId : string) => {
     },
     {
       $lookup : {
-        from: 'enrolledCourses',
+        from: 'enrolledcourses',
         let: {
           currentOngoingRegistrationSemester:
             currentOngoingRegistrationSemester._id,
@@ -217,6 +216,25 @@ const getMyOfferedCoursesService = async (userId : string) => {
           }
         ],
         as: 'enrolledCourses'
+      }
+    },
+    {
+      $addFields: {
+        isAlreadyEnrolled: {
+          $in: [ '$course._id',{
+            $map: {
+              input: '$enrolledCourses',
+              as: 'enroll', // item
+              in: '$$enroll.course'
+            }
+          }
+          ]
+        }
+      }
+    },
+    {
+      $match: {
+        isAlreadyEnrolled: false
       }
     }
   ])
