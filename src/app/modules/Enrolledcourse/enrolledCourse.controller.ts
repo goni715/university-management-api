@@ -41,7 +41,8 @@ const getAllEnrolledCoursesOfFaculty = catchAsync(async (req, res) => {
       statusCode: httpStatus.OK,
       status: true,
       message: 'Enrolled courses are retrieved successfully',
-      data: result,
+      meta: result.meta,
+      data: result.result,
     });
   });
   
@@ -58,7 +59,8 @@ const getAllEnrolledCoursesOfFaculty = catchAsync(async (req, res) => {
       statusCode: httpStatus.OK,
       status:true,
       message: 'Enrolled courses are retrieved successfully',
-      data: result
+      meta: result.meta,
+      data: result.result,
     });
   });
 

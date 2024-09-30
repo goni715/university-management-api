@@ -14,11 +14,12 @@ const createAcademicFaculty = catchAsync(async(req, res)=>{
 
 
 const getAllAcademicFaculties = catchAsync( async (req, res) => {
-    const result = await getAllAcademicFacultiesService();
+    const result = await getAllAcademicFacultiesService(req.query);
     sendResponse(res, {
         statusCode: 200,
         status: true,
         message: 'Academic Faculties are retrieved successfully',
+        meta: result.meta,
         data: result,
      })
 });
@@ -46,7 +47,7 @@ const updateAcademicFaculty = catchAsync( async (req, res) =>{
         statusCode: 200,
         status: true,
         message: 'Academic Faculty is updated successfully',
-        data: result,
+        data: result
      })
 });
 

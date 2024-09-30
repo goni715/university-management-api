@@ -1,15 +1,34 @@
 import { Types } from 'mongoose';
 import AcademicDepartmentModel from './academicDepartment.model';
 import { TAcademicDepartment } from './academicDepartment.interface';
+import QueryBuilder from '../../builder/Querybuilder';
+import { AcademicDepartmentSearchableFields } from './academicDepartment.constant';
 
 const createAcademicDepartmentService = async (PostBody: TAcademicDepartment) => {
   const result = await AcademicDepartmentModel.create(PostBody); //built-in static method
   return result;
 };
 
-const getAllDepartmentsService = async () => {
-  const result = await AcademicDepartmentModel.find().populate('academicFaculty');
-  return result;
+const getAllDepartmentsService = async (query: Record<string, unknown>) => {
+
+  const academicDepartmentQuery = new QueryBuilder(
+    AcademicDepartmentModel.find().populate('academicFaculty'),
+    query,
+  )
+    .search(AcademicDepartmentSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await academicDepartmentQuery.modelQuery;
+  const meta = await academicDepartmentQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+  
 };
 
 const getSingleDepartmentService = async (id: string) => {
