@@ -25,3 +25,5 @@ export const Months: TMonths[] = [
     Fall: '03',
   };
   
+
+  export const AcademicSemesterSearchableFields = ['name', 'year'];

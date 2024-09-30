@@ -11,7 +11,9 @@ const loginUser = catchAsync(async (req, res) => {
   //set sookie
   res.cookie('refreshToken', refreshToken, {
     secure: config.Node_Env === "production", //true-https or false-http
-    httpOnly: true
+    httpOnly: true,
+    sameSite: 'none',
+    //maxAge: 
   })
 
 

@@ -1,7 +1,8 @@
 import { Types } from 'mongoose';
 import { TAcademicSemester } from './academicSemester.interface';
 import AcademicSemesterModel from './academicSemester.model';
-import { academicSemesterCodeMapper } from './academicSemeter.constant';
+import { academicSemesterCodeMapper, AcademicSemesterSearchableFields } from './academicSemeter.constant';
+import QueryBuilder from '../../builder/Querybuilder';
 
 const createAcademicSemesterService = async (payload: TAcademicSemester) => {
   //semester name --> semester code
@@ -26,9 +27,22 @@ const createAcademicSemesterService = async (payload: TAcademicSemester) => {
   return result;
 };
 
-const getAllSemestersService = async () => {
-  const result = await AcademicSemesterModel.find();
-  return result;
+const getAllSemestersService = async (query: Record<string, unknown>) => {
+  const academicSemesterQuery = new QueryBuilder(AcademicSemesterModel.find(), query)
+  .search(AcademicSemesterSearchableFields)
+  .filter()
+  .sort()
+  .paginate()
+  .fields();
+
+const result = await academicSemesterQuery.modelQuery;
+const meta = await academicSemesterQuery.countTotal();
+
+return {
+  meta,
+  result
+}
+
 };
 
 const getSingleSemesterService = async (id: string) => {

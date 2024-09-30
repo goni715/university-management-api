@@ -10,7 +10,7 @@ import { TFaculty } from './faculty.interface';
 const getAllFacultiesService = async (query: Record<string, unknown>) => {
  
   const queryBuilderInstance = new QueryBuilder(
-    FacultyModel.find(),
+    FacultyModel.find().populate('academicDepartment academicFaculty'),
     query,
   );
   const facultyQuery = queryBuilderInstance

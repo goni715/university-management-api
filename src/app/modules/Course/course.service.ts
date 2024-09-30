@@ -15,7 +15,12 @@ const getAllCoursesService = async (query: Record<string, unknown>) => {
   const queryBuilderInstance = new QueryBuilder(CourseModel.find().populate('preRequisiteCourses.course'), query);
   const courseQuery = queryBuilderInstance.search(CourseSearchableFields).filter().sort().paginate().fields();
   const result = await courseQuery.modelQuery;
-  return result;
+  const meta = await courseQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
 const getSingleCourseService = async (id: string) => {
