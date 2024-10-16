@@ -34,7 +34,7 @@ router.post(
 
 router.post(
   '/create-admin',
-  authMiddleware('superAdmin'),
+  authMiddleware('superAdmin', 'admin'),
   upload.single('image'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);

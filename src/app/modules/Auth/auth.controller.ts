@@ -13,7 +13,7 @@ const loginUser = catchAsync(async (req, res) => {
     secure: config.Node_Env === "production", //true-https or false-http
     httpOnly: true,
     sameSite: 'none',
-    //maxAge: 
+    maxAge: 1000 * 60 * 60 * 24 * 365
   })
 
 
