@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import config from '../../config';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
+
 
 
 export const checkPassword = async (plainTextPass: string, hashPassword: string) => {
@@ -29,12 +30,5 @@ export const createToken = (jwtPayload : {userId:string, role: string}, secretKe
 
 
 
-export const verifyToken = (token:string, secretKey:string) => {
-   const decoded = jwt.verify(
-      token,
-      secretKey,
-    ) as JwtPayload;
 
-    return decoded;
-}
 

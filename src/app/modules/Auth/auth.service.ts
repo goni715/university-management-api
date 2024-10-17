@@ -2,10 +2,11 @@ import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import UserModel from '../user/user.model';
 import { TChangePassword, TLoginUser } from './auth.interface';
-import { checkPassword, createToken, hashedPassword, isJWTIssuedBeforePasswordChanged, verifyToken } from './auth.utils';
+import { checkPassword, createToken, hashedPassword, isJWTIssuedBeforePasswordChanged } from './auth.utils';
 import { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 import sendEmail from '../../utils/sendEmail';
+import verifyToken from '../../utils/verifyToken';
 
 const loginUserService = async (payload: TLoginUser) => {
   const { id, password } = payload || {};
@@ -102,7 +103,7 @@ const refreshTokenService = async(token: string) => {
   }
 
   //verify-token
-   const decoded = verifyToken(
+   const decoded = await verifyToken(
       token,
       config.jwt_refresh_secret as string
     )
