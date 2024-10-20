@@ -117,8 +117,7 @@ const studentSchema = new Schema<TStudent>(
       },
     },
     dateOfBirth: {
-      type: String,
-      trim: true,
+      type: Date,
     },
     contactNo: {
       type: String,
