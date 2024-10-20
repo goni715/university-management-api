@@ -14,6 +14,7 @@ import { TFaculty } from '../faculty/faculty.interface';
 import AcademicDepartmentModel from '../academicDepartment/academicDepartment.model';
 import FacultyModel from '../faculty/faculty.model';
 import uploadImageToCloudinary from '../../utils/uploadImageToCloudinary';
+import httpStatus from 'http-status';
 
 
 const createStudentService = async (
@@ -22,6 +23,12 @@ const createStudentService = async (
   studentData: TStudent,
 ) => {
   const session = await mongoose.startSession();
+
+  //check email already existed
+  const emailExists = await UserModel.findOne({ email: studentData.email });
+  if (emailExists) {
+    throw new AppError(httpStatus.CONFLICT, 'This email is already existed');
+  }
 
   try {
     session.startTransaction();
@@ -56,19 +63,12 @@ const createStudentService = async (
     }
 
     //set academicFaculty
-    studentData.academicFaculty=academicDepartment?.academicFaculty;
+    studentData.academicFaculty = academicDepartment?.academicFaculty;
 
-    
     //set manually generated id
     userData.id = await generateStudentId(
       admissionSemester as TAcademicSemester & { _id: Types.ObjectId },
     );
-
-    //if there is a file -- upload image to cloudinary
-    if(file){
-      const cloudinaryRes = await uploadImageToCloudinary(file?.path);
-      studentData.profileImg = cloudinaryRes?.secure_url;
-    }
 
     //create a user (transaction-01)
     const newUser = await UserModel.create([userData], { session }); //built-in static method
@@ -79,6 +79,12 @@ const createStudentService = async (
     // set id, _id as user
     studentData.id = newUser[0].id;
     studentData.user = newUser[0]._id;
+
+    //if there is a file -- upload image to cloudinary
+    if (file) {
+      const cloudinaryRes = await uploadImageToCloudinary(file?.path);
+      studentData.profileImg = cloudinaryRes?.secure_url;
+    }
 
     //create a student (transaction-02)
     const newStudent = await StudentModel.create([studentData], { session });
@@ -91,7 +97,6 @@ const createStudentService = async (
     await session.endSession();
 
     return newStudent[0];
-    return null;
   } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
@@ -118,6 +123,14 @@ const createAdminService = async (
     //set admin email
     userData.email = adminData.email;
     const session = await mongoose.startSession();
+
+    
+  //check email already existed
+  const emailExists = await UserModel.findOne({ email: adminData.email });
+  if (emailExists) {
+    throw new AppError(httpStatus.CONFLICT, 'This email is already existed');
+  }
+
 
   try {
     session.startTransaction();
@@ -176,7 +189,14 @@ const createFacultyService = async (
     //set faculty email
     userData.email = facultyData.email;
 
-     // find academic department info
+        
+  //check email already existed
+  const emailExists = await UserModel.findOne({ email: facultyData.email });
+  if (emailExists) {
+    throw new AppError(httpStatus.CONFLICT, 'This email is already existed');
+  }
+
+  // find academic department info
   const academicDepartment = await AcademicDepartmentModel.findById(
     facultyData.academicDepartment,
   );
@@ -196,12 +216,6 @@ const createFacultyService = async (
     //set manually generated id
     userData.id = await generateFacultyId();
 
-      //if there is a file -- upload image to cloudinary
-      if(file){
-        const cloudinaryRes = await uploadImageToCloudinary(file?.path);
-        facultyData.profileImg = cloudinaryRes?.secure_url;
-      }
-
     //create a user (transaction-01)
     const newUser = await UserModel.create([userData], { session }); //built-in static method
     if (!newUser.length) {
@@ -211,6 +225,12 @@ const createFacultyService = async (
     //set id, _id as user
     facultyData.id = newUser[0].id;
     facultyData.user = newUser[0]._id;
+
+    //if there is a file -- upload image to cloudinary
+    if (file) {
+      const cloudinaryRes = await uploadImageToCloudinary(file?.path);
+      facultyData.profileImg = cloudinaryRes?.secure_url;
+    }
 
     //create a admin (transaction-02)
     const newFaculty = await FacultyModel.create([facultyData], { session });

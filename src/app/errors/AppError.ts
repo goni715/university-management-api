@@ -4,6 +4,8 @@ class AppError extends Error{
     constructor(statusCode:number, message: string, stack=''){
         super(message);
         this.statusCode = statusCode;
+        console.log(statusCode);
+        console.log(message);
 
         if(stack){
             this.stack = stack;
