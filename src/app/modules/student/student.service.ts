@@ -77,6 +77,7 @@ const getAllStudentsService = async (query: Record<string, unknown>) => {
 
   const queryBuilderInstance = new QueryBuilder(
     StudentModel.find()
+    .populate('user', 'status')
       .populate('admissionSemester academicDepartment academicFaculty'),
     query,
   );

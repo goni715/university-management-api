@@ -18,6 +18,9 @@ const createUserNameValidationSchema = z.object({
     //.nonempty('First Name is required')
     .refine(capitalizeValidator, {
       message: 'First Name must be in capitalize format',
+    })
+    .refine((value) => /^[A-Za-z]+$/.test(value), {
+      message: 'First Name must only contain alphabets',
     }),
   middleName: z.string().max(20, "Middle Name can't be more than 20 characters").trim().optional(),
   lastName: z
