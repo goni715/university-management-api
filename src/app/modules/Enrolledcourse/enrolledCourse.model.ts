@@ -62,7 +62,7 @@ const enrolledCourseSchema = new Schema<TEnrolledCourse>({
     offeredCourse: {
         type: Schema.Types.ObjectId,
         required:true,
-        ref: 'SemesterRegistration'
+        ref: 'OfferedCourse'
     },
     course: {
         type: Schema.Types.ObjectId,
