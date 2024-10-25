@@ -108,7 +108,7 @@ const createOfferedCourseService = async (PostBody: TOfferedCourse) => {
 
      const timeConfliction = hasTimeConflict(assignedSchedules, newSchedule); //true or false
      if(timeConfliction){
-      throw new AppError(httpStatus.CONFLICT, `This faculty is not available at that time ! Choose other day or day`)
+      throw new AppError(httpStatus.CONFLICT, `This faculty is not available at that time ! Choose other day or time`)
      }
      
 
